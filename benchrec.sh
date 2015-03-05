@@ -1,2 +1,2 @@
 #!/bin/bash
-find . -type f -exec fsbench "$@" {} \;
+find . -type f -not -empty -exec echo {} \; -exec fsbench $@ {} \;
