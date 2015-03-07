@@ -6,20 +6,26 @@ import threading
 import argparse
 
 parser = argparse.ArgumentParser(description="""Run fsbench on a large number of files.
-                                 The results are stored in a sqlite3 database.""")
+                                 The results are stored ina sqlite3
+                                 database.""")
+
 parser.add_argument("directory", metavar="root_dir",
-                    help="the root directory to be benchmarked",
+                    help="The root directory to be benchmarked",
                     default=".")
 parser.add_argument("--db-file", dest="database", default="benchmark.db",
-                    help="where to store the sqlite database with the results")
+                    help="Where to store the sqlite database with the results")
 parser.add_argument("algorithms", metavar="algorithms", nargs="*",
-                    help="algorithms to pass on to fsbench")
+                    help="Algorithms to pass on to fsbench")
+parser.add_argument("--fsbench", dest="fsbench", default="fsbench",
+                    help="""Path to your fsbench executable.
+                    The default is ./fsbench""")
 args = parser.parse_args()
 
 THREAD_COUNT = 4
 QUEUE_MAXSIZE = 5
 ROOT_DIR = args.directory
 DATABASE_FILE = args.database
+
 if args.algorithms is not None:
     ALGORITHMS = args.algorithms
 else:
@@ -73,7 +79,7 @@ def worker():
         except queue.Empty:
             return
         print("benchmarking: " + file_path)
-        p = subprocess.Popen(["/home/hansole/bin/fsbench"] + ALGORITHMS + ["-c", file_path],
+        p = subprocess.Popen([args.fsbench] + ALGORITHMS + ["-c", file_path],
                              stdout=subprocess.PIPE)
         for line in p.stdout:
             save(line.decode("utf-8"), conn, file_path)
