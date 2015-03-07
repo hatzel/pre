@@ -3,10 +3,27 @@ import subprocess
 import queue
 import sqlite3
 import threading
+import argparse
+
+parser = argparse.ArgumentParser(description="""Run fsbench on a large number of files.
+                                 The results are stored in a sqlite3 database.""")
+parser.add_argument("directory", metavar="root_dir",
+                    help="the root directory to be benchmarked",
+                    default=".")
+parser.add_argument("--db-file", dest="database", default="benchmark.db",
+                    help="where to store the sqlite database with the results")
+parser.add_argument("algorithms", metavar="algorithms", nargs="*",
+                    help="algorithms to pass on to fsbench")
+args = parser.parse_args()
 
 THREAD_COUNT = 4
 QUEUE_MAXSIZE = 5
-DATABASE_FILE = "data.db"
+ROOT_DIR = args.directory
+DATABASE_FILE = args.database
+if args.algorithms is not None:
+    ALGORITHMS = args.algorithms
+else:
+    ALGORITHMS = []
 
 file_queue = queue.Queue(QUEUE_MAXSIZE)
 
@@ -56,16 +73,18 @@ def worker():
         except queue.Empty:
             return
         print("benchmarking: " + file_path)
-        p = subprocess.Popen(["/home/hansole/bin/fsbench", "-c", file_path],
+        p = subprocess.Popen(["/home/hansole/bin/fsbench"] + ALGORITHMS + ["-c", file_path],
                              stdout=subprocess.PIPE)
         for line in p.stdout:
             save(line.decode("utf-8"), conn, file_path)
+
+init_db()
 
 for i in range(THREAD_COUNT):
     print("launching thread " + str(i))
     threading.Thread(target=worker).start()
 
-files = subprocess.Popen(["find", ".", "-type", "f", "-not", "-empty"],
+files = subprocess.Popen(["find", ROOT_DIR, "-type", "f", "-not", "-empty"],
                          stdout=subprocess.PIPE)
 
 for file_location in files.stdout:
