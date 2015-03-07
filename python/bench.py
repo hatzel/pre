@@ -1,4 +1,4 @@
-#!/bin/python
+#!/bin/python3
 import subprocess
 import queue
 import sqlite3
