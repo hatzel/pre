@@ -47,8 +47,11 @@ def save(line, db_conn, file_name):
 def worker():
     conn = sqlite3.connect(DATABASE_FILE)
     while True:
-        print("waiting in queueu")
-        file_path = file_queue.get()
+        # A little dirty since we just terminate on the empty exception
+        try:
+            file_path = file_queue.get(timeout=1)
+        except queue.Empty:
+            return
         print("benchmarking: " + file_path)
         # Why does this variant not work?
         # p = subprocess.Popen(["fsbench", "-c", file_path]
