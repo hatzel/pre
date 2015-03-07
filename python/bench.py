@@ -4,6 +4,7 @@ import queue
 import sqlite3
 import threading
 
+THREAD_COUNT = 4
 QUEUE_MAXSIZE = 5
 DATABASE_FILE = "data.db"
 
@@ -47,28 +48,25 @@ def save(line, db_conn, file_name):
 def worker():
     conn = sqlite3.connect(DATABASE_FILE)
     while True:
-        # A little dirty since we just terminate on the empty exception
+        # A little dirty since we just terminate on the empty-exception
+        # Should work reliably since the main process
+        # generates jobs much faster then worker-threads can process it
         try:
             file_path = file_queue.get(timeout=1)
         except queue.Empty:
             return
         print("benchmarking: " + file_path)
-        # Why does this variant not work?
-        # p = subprocess.Popen(["fsbench", "-c", file_path]
-        #                       , stdout=subprocess.PIPE)
-        p = subprocess.Popen("fsbench -c " + file_path,
-                             stdout=subprocess.PIPE, shell=True)
+        p = subprocess.Popen(["/home/hansole/bin/fsbench", "-c", file_path],
+                             stdout=subprocess.PIPE)
         for line in p.stdout:
             save(line.decode("utf-8"), conn, file_path)
 
-init_db()
-
-for i in range(4):
+for i in range(THREAD_COUNT):
     print("launching thread " + str(i))
     threading.Thread(target=worker).start()
 
-files = subprocess.Popen("find . -type f -not -empty -exec echo {} \;",
-                         stdout=subprocess.PIPE, shell=True)
+files = subprocess.Popen(["find", ".", "-type", "f", "-not", "-empty"],
+                         stdout=subprocess.PIPE)
 
 for file_location in files.stdout:
-    file_queue.put(file_location.decode("utf-8"))
+    file_queue.put(file_location.decode("utf-8").strip())
