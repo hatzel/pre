@@ -1,39 +1,9 @@
 #!/bin/python3
 import subprocess
-import queue
+from multiprocessing import Pool
 import sqlite3
-import threading
 import argparse
-
-parser = argparse.ArgumentParser(description="""Run fsbench on a large number of files.
-                                 The results are stored ina sqlite3
-                                 database.""")
-
-parser.add_argument("directory", metavar="root_dir",
-                    help="The root directory to be benchmarked",
-                    default=".")
-parser.add_argument("--db-file", dest="database", default="benchmark.db",
-                    help="Where to store the sqlite database with the results")
-parser.add_argument("algorithms", metavar="algorithms", nargs="*",
-                    help="Algorithms to pass on to fsbench")
-parser.add_argument("--fsbench", dest="fsbench", default="fsbench",
-                    help="""Path to your fsbench executable.
-                    The default is ./fsbench""")
-parser.add_argument("-t", "--threads", dest="threads", default=4, type=int,
-                    help="Number of worker threads compressing files.")
-args = parser.parse_args()
-
-THREAD_COUNT = args.threads
-QUEUE_MAXSIZE = 5
-ROOT_DIR = args.directory
-DATABASE_FILE = args.database
-
-if args.algorithms is not None:
-    ALGORITHMS = args.algorithms
-else:
-    ALGORITHMS = []
-
-file_queue = queue.Queue(QUEUE_MAXSIZE)
+import sys
 
 
 class StopMarker:
@@ -43,7 +13,7 @@ class StopMarker:
 
 
 def init_db():
-    conn = sqlite3.connect(DATABASE_FILE)
+    conn = sqlite3.connect(args.database)
     c = conn.cursor()
     c.execute("""create table if not exists benchmarks
               (filename text, codec text, version text, args text,
@@ -56,9 +26,10 @@ def init_db():
     print("initialized db")
 
 
-def save(line, db_conn, file_name):
+def save_line(line, file_name):
+    db_conn = sqlite3.connect(args.database)
     if line.startswith(("Codec,", "Iterations,", "Overhead iterations,")):
-        return
+        return True
     values = line.strip().split(",")
     q_str = "insert into benchmarks values (" + "'" + file_name + "' "
     for i, v in enumerate(values):
@@ -76,30 +47,67 @@ def save(line, db_conn, file_name):
     c.close()
 
 
-def worker():
-    conn = sqlite3.connect(DATABASE_FILE)
-    while True:
-        # Stop Markers indicate that the queue wont be filled again
-        file_path = file_queue.get()
-        if isinstance(file_path, StopMarker):
-            return
-        print("benchmarking: " + file_path)
-        p = subprocess.Popen([args.fsbench] + ALGORITHMS + ["-c", file_path],
+def save(result):
+    for i, line in enumerate(result["output"]):
+        save_line(line, result["file"])
+
+
+def worker(file_path):
+    print("benchmarking: " + file_path)
+    p = subprocess.check_output([args.fsbench] + ALGORITHMS
+                                + ["-c", file_path], universal_newlines=True)
+    p = p.split("\n")
+    return {"output": p[1:-4], "file": file_path}
+
+
+def sigint_handler(signal, frame):
+    sys.exit(1)
+
+
+def log_error(e):
+    print(e)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="""Run fsbench on a large number of files.
+                                    The results are stored ina sqlite3
+                                    database.""")
+
+    parser.add_argument("directory", metavar="root_dir",
+                        help="The root directory to be benchmarked",
+                        default=".")
+    parser.add_argument("--db-file", dest="database", default="benchmark.db",
+                        help="""Where to store the sqlite
+                        database with the results""")
+    parser.add_argument("algorithms", metavar="algorithms", nargs="*",
+                        help="Algorithms to pass on to fsbench")
+    parser.add_argument("--fsbench", dest="fsbench", default="fsbench",
+                        help="""Path to your fsbench executable.
+                        The default is ./fsbench""")
+    parser.add_argument("-t", "--threads", dest="threads", default=4, type=int,
+                        help="Number of worker threads compressing files.")
+    args = parser.parse_args()
+
+    THREAD_COUNT = args.threads
+    QUEUE_MAXSIZE = 5
+    ROOT_DIR = args.directory
+
+    init_db()
+
+    if args.algorithms is not None:
+        ALGORITHMS = args.algorithms
+    else:
+        ALGORITHMS = []
+
+    pool = Pool(processes=args.threads)
+
+    files = subprocess.Popen(["find", ROOT_DIR, "-type", "f",
+                              "-not", "-empty"],
                              stdout=subprocess.PIPE)
-        for line in p.stdout:
-            save(line.decode("utf-8"), conn, file_path)
 
-init_db()
+    for file_location in files.stdout:
+        pool.apply_async(worker, (file_location.decode("utf-8").strip(),),
+                         callback=save, error_callback=log_error)
 
-for i in range(THREAD_COUNT):
-    print("launching thread " + str(i))
-    threading.Thread(target=worker).start()
-
-files = subprocess.Popen(["find", ROOT_DIR, "-type", "f", "-not", "-empty"],
-                         stdout=subprocess.PIPE)
-
-for file_location in files.stdout:
-    file_queue.put(file_location.decode("utf-8").strip())
-
-for i in range(THREAD_COUNT):
-    file_queue.put(StopMarker())
+    pool.close()
+    pool.join()
