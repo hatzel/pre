@@ -16,13 +16,12 @@ def init_db():
     conn.commit()
     c.close()
     conn.close()
-    print("initialized db")
 
 
 def save_line(line, file_name):
     db_conn = sqlite3.connect(args.database)
     if line.startswith(("Codec,", "Iterations,", "Overhead iterations,")):
-        return True
+        return
     values = line.strip().split(",")
     q_str = "insert into benchmarks values (" + "'" + file_name + "' "
     for i, v in enumerate(values):
@@ -33,7 +32,8 @@ def save_line(line, file_name):
         else:
             q_str = q_str + ", " + "'NULL'"
     q_str = q_str + ");"
-    print(q_str)
+    if __debug__:
+        print(q_str)
     c = db_conn.cursor()
     c.execute(q_str)
     db_conn.commit()
@@ -46,10 +46,12 @@ def save(result):
 
 
 def worker(file_path):
-    print("benchmarking: " + file_path)
-    p = subprocess.check_output([args.fsbench] + ALGORITHMS
+    if __debug__:
+        print("benchmarking: " + file_path)
+    p = subprocess.check_output([args.fsbench] + args.algorithms
                                 + ["-c", file_path], universal_newlines=True)
     p = p.split("\n")
+    # The array slice removes the meta information given by fsbench.
     return {"output": p[1:-4], "file": file_path}
 
 if __name__ == "__main__":
@@ -68,24 +70,16 @@ if __name__ == "__main__":
     parser.add_argument("--fsbench", dest="fsbench", default="fsbench",
                         help="""Path to your fsbench executable.
                         The default is ./fsbench""")
-    parser.add_argument("-t", "--threads", dest="threads", default=4, type=int,
-                        help="Number of worker threads compressing files.")
+    parser.add_argument("-p", "--processes", dest="processes", default=4,
+                        type=int,
+                        help="Number of worker processes compressing files.")
     args = parser.parse_args()
-
-    THREAD_COUNT = args.threads
-    QUEUE_MAXSIZE = 5
-    ROOT_DIR = args.directory
 
     init_db()
 
-    if args.algorithms is not None:
-        ALGORITHMS = args.algorithms
-    else:
-        ALGORITHMS = []
+    pool = Pool(processes=args.processes)
 
-    pool = Pool(processes=args.threads)
-
-    files = subprocess.Popen(["find", ROOT_DIR, "-type", "f",
+    files = subprocess.Popen(["find", args.directory, "-type", "f",
                               "-not", "-empty"],
                              stdout=subprocess.PIPE)
 
