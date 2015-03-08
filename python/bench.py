@@ -19,9 +19,11 @@ parser.add_argument("algorithms", metavar="algorithms", nargs="*",
 parser.add_argument("--fsbench", dest="fsbench", default="fsbench",
                     help="""Path to your fsbench executable.
                     The default is ./fsbench""")
+parser.add_argument("-t", "--threads", dest="threads", default=4, type=int,
+                    help="Number of worker threads compressing files.")
 args = parser.parse_args()
 
-THREAD_COUNT = 4
+THREAD_COUNT = args.threads
 QUEUE_MAXSIZE = 5
 ROOT_DIR = args.directory
 DATABASE_FILE = args.database
@@ -32,6 +34,12 @@ else:
     ALGORITHMS = []
 
 file_queue = queue.Queue(QUEUE_MAXSIZE)
+
+
+class StopMarker:
+    """Object in queue that tells the worker-threads that
+    they have reached the workloads end"""
+    pass
 
 
 def init_db():
@@ -71,12 +79,9 @@ def save(line, db_conn, file_name):
 def worker():
     conn = sqlite3.connect(DATABASE_FILE)
     while True:
-        # A little dirty since we just terminate on the empty-exception
-        # Should work reliably since the main process
-        # generates jobs much faster then worker-threads can process it
-        try:
-            file_path = file_queue.get(timeout=1)
-        except queue.Empty:
+        # Stop Markers indicate that the queue wont be filled again
+        file_path = file_queue.get()
+        if isinstance(file_path, StopMarker):
             return
         print("benchmarking: " + file_path)
         p = subprocess.Popen([args.fsbench] + ALGORITHMS + ["-c", file_path],
@@ -95,3 +100,6 @@ files = subprocess.Popen(["find", ROOT_DIR, "-type", "f", "-not", "-empty"],
 
 for file_location in files.stdout:
     file_queue.put(file_location.decode("utf-8").strip())
+
+for i in range(THREAD_COUNT):
+    file_queue.put(StopMarker())
