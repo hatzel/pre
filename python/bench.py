@@ -3,13 +3,6 @@ import subprocess
 from multiprocessing import Pool
 import sqlite3
 import argparse
-import sys
-
-
-class StopMarker:
-    """Object in queue that tells the worker-threads that
-    they have reached the workloads end"""
-    pass
 
 
 def init_db():
@@ -59,15 +52,6 @@ def worker(file_path):
     p = p.split("\n")
     return {"output": p[1:-4], "file": file_path}
 
-
-def sigint_handler(signal, frame):
-    sys.exit(1)
-
-
-def log_error(e):
-    print(e)
-
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="""Run fsbench on a large number of files.
                                     The results are stored ina sqlite3
@@ -107,7 +91,7 @@ if __name__ == "__main__":
 
     for file_location in files.stdout:
         pool.apply_async(worker, (file_location.decode("utf-8").strip(),),
-                         callback=save, error_callback=log_error)
+                         callback=save)
 
     pool.close()
     pool.join()
