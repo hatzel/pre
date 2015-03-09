@@ -42,7 +42,7 @@ def save_line(line, file_name, db_conn):
     # Appending encoding speed
     values.append(calculate_ratio(values[4], values[3]))
     # Appending decoding speed
-    values.append(calculate_ratio(values[4], values[8]))
+    values.append(calculate_ratio(values[8], values[7]))
     q_str = "insert into benchmarks values (" + "'" + file_name + "' "
     for i, v in enumerate(values):
         if len(v) > 0 and i >= 3:
