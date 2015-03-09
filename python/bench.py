@@ -12,17 +12,37 @@ def init_db():
               (filename text, codec text, version text, args text,
               e_time INTEGER, input_size INTEGER, output_size INTEGER,
               e_iters INTEGER, d_time INTEGER, d_output_size INTEGER,
-              d_iters INTEGER);""")
+              d_iters INTEGER, ratio REAL, e_speed INTEGER, d_speed);""")
     conn.commit()
     c.close()
     conn.close()
 
 
-def save_line(line, file_name):
-    db_conn = sqlite3.connect(args.database)
+def calculate_ratio(a, b):
+    """Calculates a/b and returns the result as a string. For easy handling
+    ins sqlite query strings"""
+    if a == "":
+        a = 0
+    if b == "":
+        b = 0
+    a = int(a)
+    b = int(b)
+    if b == 0:
+        return "NULL"
+    else:
+        return str(a / b)
+
+
+def save_line(line, file_name, db_conn):
     if line.startswith(("Codec,", "Iterations,", "Overhead iterations,")):
         return
     values = line.strip().split(",")
+    # Appending Compression Ration
+    values.append(calculate_ratio(values[4], values[5]))
+    # Appending encoding speed
+    values.append(calculate_ratio(values[4], values[3]))
+    # Appending decoding speed
+    values.append(calculate_ratio(values[4], values[8]))
     q_str = "insert into benchmarks values (" + "'" + file_name + "' "
     for i, v in enumerate(values):
         if len(v) > 0 and i >= 3:
@@ -30,7 +50,7 @@ def save_line(line, file_name):
         elif len(v) > 0 and i < 3:
             q_str = q_str + ", " + "'" + v + "'"
         else:
-            q_str = q_str + ", " + "'NULL'"
+            q_str = q_str + ", " + "NULL"
     q_str = q_str + ");"
     if __debug__:
         print(q_str)
@@ -41,22 +61,25 @@ def save_line(line, file_name):
 
 
 def save(result):
+    db_conn = sqlite3.connect(args.database)
     for i, line in enumerate(result["output"]):
-        save_line(line, result["file"])
+        save_line(line, result["file"], db_conn)
+    db_conn.close()
 
 
 def worker(file_path):
     if __debug__:
         print("benchmarking: " + file_path)
     p = subprocess.check_output([args.fsbench] + args.algorithms
-                                + ["-c", file_path], universal_newlines=True)
+                                + ["-c", "-w0", file_path],
+                                universal_newlines=True)
     p = p.split("\n")
     # The array slice removes the meta information given by fsbench.
     return {"output": p[1:-4], "file": file_path}
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="""Run fsbench on a large number of files.
-                                    The results are stored ina sqlite3
+                                    The results are stored in a sqlite3
                                     database.""")
 
     parser.add_argument("directory", metavar="root_dir",
@@ -70,9 +93,11 @@ if __name__ == "__main__":
     parser.add_argument("--fsbench", dest="fsbench", default="fsbench",
                         help="""Path to your fsbench executable.
                         The default is ./fsbench""")
-    parser.add_argument("-p", "--processes", dest="processes", default=4,
+    parser.add_argument("-p", "--processes", dest="processes", default=None,
                         type=int,
-                        help="Number of worker processes compressing files.")
+                        help="""Number of worker processes compressing files.
+                        This defaults to the number of your
+                        processor cores.""")
     args = parser.parse_args()
 
     init_db()
