@@ -4,7 +4,7 @@ from multiprocessing import Pool
 import sqlite3
 import argparse
 
-view = "SELECT codec, (input_size*1.0 / output_size*1.0)  FROM benchmarks;"
+
 def init_db():
     conn = sqlite3.connect(args.database)
     c = conn.cursor()
@@ -12,7 +12,8 @@ def init_db():
               (filename text, codec text, version text, args text,
               e_time INTEGER, input_size INTEGER, output_size INTEGER,
               e_iters INTEGER, d_time INTEGER, d_output_size INTEGER,
-              d_iters INTEGER, ratio REAL, e_speed INTEGER, d_speed);""")
+              d_iters INTEGER, ratio REAL,
+              e_speed INTEGER, d_speed, block_size);""")
     conn.commit()
     c.close()
     conn.close()
@@ -43,6 +44,8 @@ def save_line(line, file_name, db_conn):
     values.append(calculate_ratio(values[4], values[3]))
     # Appending decoding speed
     values.append(calculate_ratio(values[8], values[7]))
+    # Append block size
+    values.append(args.blocksize)
     q_str = "insert into benchmarks values (" + "'" + file_name + "' "
     for i, v in enumerate(values):
         if len(v) > 0 and i >= 3:
@@ -71,7 +74,8 @@ def worker(file_path):
     if __debug__:
         print("benchmarking: " + file_path)
     p = subprocess.check_output([args.fsbench] + args.algorithms
-                                + ["-c", "-w0", file_path],
+                                + ["-b" + args.blocksize, "-c",
+                                   "-w0", file_path],
                                 universal_newlines=True)
     p = p.split("\n")
     # The array slice removes the meta information given by fsbench.
@@ -98,6 +102,9 @@ if __name__ == "__main__":
                         help="""Number of worker processes compressing files.
                         This defaults to the number of your
                         processor cores.""")
+    parser.add_argument("-b", dest="blocksize", default="1717986918",
+                        help="""filesystem block size to be
+                        passed on to fsbench.""")
     args = parser.parse_args()
 
     init_db()
