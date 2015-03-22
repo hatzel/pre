@@ -4,7 +4,7 @@ from multiprocessing import Pool
 import sqlite3
 import argparse
 
-
+view = "SELECT codec, (input_size*1.0 / output_size*1.0)  FROM benchmarks;"
 def init_db():
     conn = sqlite3.connect(args.database)
     c = conn.cursor()
