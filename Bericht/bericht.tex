@@ -11,7 +11,7 @@
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage{ngerman}
+\usepackage[english]{babel}
 
 \usepackage{lmodern}
 
@@ -45,9 +45,9 @@
 
 \renewcommand*{\lstlistlistingname}{Listingverzeichnis}
 
-\renewcommand*{\appendixname}{Anhang}
-\renewcommand*{\appendixtocname}{Anhänge}
-\renewcommand*{\appendixpagename}{Anhänge}
+\renewcommand*{\appendixname}{Appendix}
+\renewcommand*{\appendixtocname}{Appendices}
+\renewcommand*{\appendixpagename}{Appendices}
 
 \begin{document}
 
@@ -72,156 +72,67 @@
 	\vfill
 
 	{\large \begin{tabular}{ll}
-		Vorgelegt von: & Vorname Nachname \\
-		E-Mail-Adresse: & \href{mailto:adresse@email.de}{adresse@email.de} \\
-		Matrikelnummer: & 1234567 \\
+		Vorgelegt von: & Lukas Stabe \\
+			& Hans Ole Hatzel \\
+			& Arne Struck \\
+		E-Mail-Adresse: 
+			& \href{mailto:2stabe@informatik.uni-hamburg.de} {2stabe@informatik.uni-hamburg.de} \\			
+			& \href{mailto:2hatzel@informatik.uni-hamburg.de}{2hatzel@informatik.uni-hamburg.de} \\
+			& \href{mailto:1struck@informatik.uni-hamburg.de}{1struck@informatik.uni-hamburg.de} \\ 
+		%Matrikelnummer: & 1234567 \\
 		Studiengang: & Informatik \\
 		\\
-		Erstgutachter: & Name des Erstgutachters \\
-		Zweitgutachter: & Name des Zweitgutachters\\ \\
-		Betreuer: & Name des Betreuers \\
+		Betreuer: & Michael Kuhn \\
+			& Konstantinos Chasapis \\
 		\\
-		Hamburg, den 01.01.2012
+		Hamburg, den 29.03.2015
 	\end{tabular}\par}
 \end{titlepage}
 
 \chapter*{Abstract}
+%TODO whatever
 
 \thispagestyle{empty}
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum.
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum.
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+   
 
 \tableofcontents
 
-\chapter{Einleitung}
-\label{Einleitung}
+\chapter{Introduction}
+\label{Introduction}
+%TODO
+bla ... + Analysis of compressionalgorithms
 
-\textit{%
-In diesem Kapitel ...
-}
-\bigskip
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum.
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum.
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\footnote{\label{foot:1}Ich bin eine Fußnote} % Fußnote %
+\chapter{Assignment}
+\label{Assignment}
+%TODO
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum.
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet:
 
-\begin{itemize}
-	\item Lorem
-	\item Ipsum
-\end{itemize}
-
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum.
-„Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.“~\cite{Quelle2012}
-
-\medskip
-
-Referenzbeispiel: Für mehr Informationen, siehe Kapitel~\ref{Aufgabenstellung}.
-
-\chapter{Aufgabenstellung}
-\label{Aufgabenstellung}
-
-\textit{%
-In diesem Kapitel ...
-}
-\bigskip
-
-\section{Unterkapitel}
-
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum.
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum.
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet (siehe Abbildung~\ref{fig:logo}).
-
-% Abbildung %
-\begin{figure}[h]
-	\begin{center}
-		\includegraphics[totalheight=0.1\textheight]{logo.jpg}
-	\end{center}
-	\caption{Beispiel-Abbildung}
-	\label{fig:logo}
-\end{figure}
-
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum.
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua (siehe Tabelle~\ref{table:Tabelle1}).
-
-% Tabelle %
-\begin{table}
-	\begin{center}
-		\begin{tabular}{|c|c|c|}\hline
-		Spalte 1 & Spalte 2 & Spalte 3 \\ \hline
-		Zeile 1  &   -      & -       \\
-		Zeile 2  &  Zeile 2 & -       \\
-		Zeile 3  &  Zeile 3 & Zeile 3  \\ \hline
-		\end{tabular}
-	\end{center}
-	\caption{Beispiel-Tabelle}
-	\label{table:Tabelle1}
-\end{table}
-
-\chapter{Design \& Implementierung}
+\chapter{Design and Implementation}
 \label{Design}
+%TODO
 
-\textit{%
-In diesem Kapitel ...
-}
-\bigskip
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum.
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet (siehe Listing~\ref{lst:example1}).
-
-\begin{lstlisting}[caption={Beispiel-Code}, label={lst:example1}]
-void print (void)
-{
-	int i;
-
-	for (i = 0; i < 10; i++)
-	{
-		printf("Hello World!\n");
-	}
-}
-\end{lstlisting}
-
-\chapter{Fazit}
-\label{Fazit}
-
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum.
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+\chapter{Conclusion}
+\label{Conclusion}
+%TODO
 
 \bibliographystyle{alpha}
 \bibliography{literatur}
 
+%TODO : an ref s denken!
 \listoffigures
 
 \listoftables
 
 \lstlistoflistings
 
+%TODO : was?
 \begin{appendices}
 
-\chapter{Anhangskapitel}
+\chapter{Appendix Chapter}
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
-At vero eos et accusam et justo duo dolores et ea rebum.
-Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
 
 \end{appendices}
 
@@ -231,18 +142,17 @@ Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit ame
 
 \chapter*{}
 
+%TODO needed?
 \section*{Erklärung}
 
-Ich versichere, dass ich die Arbeit selbstständig verfasst und keine anderen, als die angegebenen Hilfsmittel -- insbesondere keine im Quellenverzeichnis nicht benannten Internetquellen -- benutzt habe, die Arbeit vorher nicht in einem anderen Prüfungsverfahren eingereicht habe und die eingereichte schriftliche Fassung der auf dem elektronischen Speichermedium entspricht.
+Wir versichern, dass wir die Arbeit selbstständig verfasst, die Arbeiten am Projekt selbstständig durchgeführt und keine anderen, als die angegebenen Hilfsmittel -- insbesondere keine im Quellenverzeichnis nicht benannten Internetquellen -- benutzt haben, die Arbeit vorher nicht in einem anderen Prüfungsverfahren eingereicht haben.
 
 \smallskip
 
-\textbf{Optional:} Ich bin mit der Einstellung der Bachelor-Arbeit in den Bestand der Bibliothek des Fachbereichs Informatik einverstanden.
-
 \bigskip
 \bigskip
 \bigskip
 
-Hamburg, den 01.01.2012  \quad \dotfill
+%Hamburg, den 29.03.2015  \quad \dotfill \\ \\
 
 \end{document}
