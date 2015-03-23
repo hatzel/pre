@@ -31,7 +31,7 @@ def calculate_ratio(a, b):
     if b == 0:
         return "NULL"
     else:
-        return str(a / b)
+        return str(float(a) / float(b))
 
 
 def save_line(line, file_name, db_conn):
