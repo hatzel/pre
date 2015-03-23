@@ -10,6 +10,9 @@ AXIS_LABLES = {
 }
 parser = argparse.ArgumentParser(description="""Visualize the results of your
                                  benchmarks from a sqlite database.""")
+parser.add_argument("--db-file", dest="database", default="benchmark.db",
+                    help="""path to the database containing the data
+                    you wish to visualize""")
 parser.add_argument("--size_min", help="Filter for minimum filesize in bytes",
                     default=-1)
 parser.add_argument("--size_max", help="Filter for maximum filesize in bytes",
@@ -27,8 +30,9 @@ if args.size_max > -1:
 q_str_avg = """select codec, avg({0}), avg({1}) from benchmarks
             {2} GROUP by codec;""".format(args.xaxis, args.yaxis, where_clause)
 
-conn = sqlite3.connect("benchmark.db")
+conn = sqlite3.connect(args.database)
 c = conn.cursor()
+print(q_str_avg)
 c.execute(q_str_avg)
 data = [list(i) for i in c]
 
