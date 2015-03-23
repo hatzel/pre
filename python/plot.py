@@ -9,7 +9,9 @@ AXIS_LABLES = {
     "ratio": "Compression Ratio"
 }
 parser = argparse.ArgumentParser(description="""Visualize the results of your
-                                 benchmarks from a sqlite database.""")
+                                 benchmarks from a sqlite database. Currently
+                                 only averages of two metrics from multiple
+                                 algorithms can be compared.""")
 parser.add_argument("--db-file", dest="database", default="benchmark.db",
                     help="""path to the database containing the data
                     you wish to visualize""")
@@ -21,13 +23,18 @@ parser.add_argument("xaxis", help="The metric displayed on the x-axis",
                     nargs="?", default="ratio")
 parser.add_argument("yaxis", help="The metric displayed on the y-axis",
                     nargs="?", default="e_speed")
-
+parser.add_argument("--pattern", help="""Only take files into account
+                    where filename matches the given pattern.
+                    '%' can be used as a wildcard.""")
 args = parser.parse_args()
 
 where_clause = "WHERE input_size >" + str(args.size_min)
-if args.size_max > -1:
-    where_clause = where_clause + "and input_size <" + str(args.size_max)
-q_str_avg = """select codec, avg({0}), avg({1}) from benchmarks
+if int(args.size_max) > -1:
+    where_clause = where_clause + " AND input_size <" + str(args.size_max)
+if args.pattern is not None:
+    print(args.pattern)
+    where_clause = where_clause +  " AND filename LIKE " + "'" + args.pattern + "'"
+q_str_avg = """SELECT codec, avg({0}), avg({1}) FROM benchmarks
             {2} GROUP by codec;""".format(args.xaxis, args.yaxis, where_clause)
 
 conn = sqlite3.connect(args.database)
