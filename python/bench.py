@@ -49,12 +49,12 @@ def save_line(line, file_name, db_conn):
     q_str = "insert into benchmarks values (" + "'" + file_name + "' "
     for i, v in enumerate(values):
         if len(v) > 0 and i >= 3:
-            q_str = q_str + ", " + v
+            q_str += ", " + v
         elif len(v) > 0 and i < 3:
-            q_str = q_str + ", " + "'" + v + "'"
+            q_str += ", " + "'" + v + "'"
         else:
-            q_str = q_str + ", " + "NULL"
-    q_str = q_str + ");"
+            q_str += ", " + "NULL"
+    q_str += ");"
     if __debug__:
         print(q_str)
     c = db_conn.cursor()
@@ -83,8 +83,9 @@ def worker(file_path):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="""Run fsbench on a large number of files.
-                                    The results are stored in a sqlite3
-                                    database.""")
+                                    The results are stored in a sqlite3 database.
+                                    All units in the database are in bytes
+                                    and milliseconds""")
 
     parser.add_argument("directory", metavar="root_dir",
                         help="The root directory to be benchmarked",
@@ -115,7 +116,9 @@ if __name__ == "__main__":
                               "-not", "-empty"],
                              stdout=subprocess.PIPE)
 
+    file_count = 0
     for file_location in files.stdout:
+        file_count += 1
         pool.apply_async(worker, (file_location.decode("utf-8").strip(),),
                          callback=save)
 
