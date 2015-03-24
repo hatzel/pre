@@ -55,6 +55,19 @@ def save_line(line, file_name, db_conn):
     c.close()
 
 
+def entry_exists_for_blocksize(db_conn, filename):
+    c = db_conn.cursor()
+    c.execute("select * from benchmarks where filename like ? and block_size = ?",
+              (filename, args.blocksize))
+    db_conn.commit()
+    if not c.fetchone():
+        c.close()
+        return False
+    else:
+        c.close()
+        return True
+
+
 def save(result):
     db_conn = sqlite3.connect(args.database)
     for i, line in enumerate(result["output"]):
@@ -65,10 +78,14 @@ def save(result):
 def worker(file_path):
     if __debug__:
         print("benchmarking: " + file_path)
-    p = subprocess.check_output([args.fsbench] + args.algorithms
-                                + ["-b" + args.blocksize, "-c",
-                                   "-w0", file_path],
-                                universal_newlines=True)
+    try:
+        p = subprocess.check_output([args.fsbench] + args.algorithms
+                                    + ["-b" + args.blocksize, "-c",
+                                    "-w0", file_path],
+                                    universal_newlines=True)
+    except subprocess.CalledProcessError as e:
+        print("fsbench error in process" + str(e.returncode) +
+              " while processing file " + file_path)
     p = p.split("\n")
     # The array slice removes the meta information given by fsbench.
     return {"output": p[1:-4], "file": file_path}
@@ -109,10 +126,13 @@ if __name__ == "__main__":
                              stdout=subprocess.PIPE)
 
     file_count = 0
+    db_conn = sqlite3.connect(args.database)
     for file_location in files.stdout:
         file_count += 1
-        pool.apply_async(worker, (file_location.decode("utf-8").strip(),),
-                         callback=save)
+        file_name = file_location.decode("utf-8").strip()
+        if not entry_exists_for_blocksize(db_conn, file_name):
+            pool.apply_async(worker, (file_name,), callback=save)
+    db_conn.close()
 
     pool.close()
     pool.join()
