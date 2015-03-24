@@ -9,7 +9,7 @@ def init_db():
     conn = sqlite3.connect(args.database)
     c = conn.cursor()
     c.execute("""create table if not exists benchmarks
-              (filename text, codec text, version text, args text,
+              (filename text, codec text COLLATE NOCASE, version text, args text,
               e_time INTEGER, input_size INTEGER, output_size INTEGER,
               e_iters INTEGER, d_time INTEGER, d_output_size INTEGER,
               d_iters INTEGER, ratio REAL,
@@ -68,6 +68,17 @@ def entry_exists_for_blocksize(db_conn, filename):
         return True
 
 
+def algorithms_logged_for_file(db_conn, filename):
+    c = db_conn.cursor()
+    c.execute("select codec from benchmarks where filename like ? and block_size = ?",
+              (filename, args.blocksize))
+    db_conn.commit()
+    algs = c.fetchall()
+    algs = [i[0] for i in algs]
+    c.close()
+    return algs
+
+
 def save(result):
     db_conn = sqlite3.connect(args.database)
     for i, line in enumerate(result["output"]):
@@ -75,11 +86,15 @@ def save(result):
     db_conn.close()
 
 
-def worker(file_path):
+def worker(file_path, logged_algorithms):
+    # Find the algorithms that were not yet measured
+    algs = [i for i in args.algorithms if i not in logged_algorithms]
+    if len(algs) == 0:
+        return {"output": [], "file": file_path}
     if __debug__:
         print("benchmarking: " + file_path)
     try:
-        p = subprocess.check_output([args.fsbench] + args.algorithms
+        p = subprocess.check_output([args.fsbench] + algs
                                     + ["-b" + args.blocksize, "-c",
                                     "-w0", file_path],
                                     universal_newlines=True)
@@ -130,8 +145,8 @@ if __name__ == "__main__":
     for file_location in files.stdout:
         file_count += 1
         file_name = file_location.decode("utf-8").strip()
-        if not entry_exists_for_blocksize(db_conn, file_name):
-            pool.apply_async(worker, (file_name,), callback=save)
+        algs = algorithms_logged_for_file(db_conn, file_name)
+        pool.apply_async(worker, (file_name, algs), callback=save)
     db_conn.close()
 
     pool.close()
