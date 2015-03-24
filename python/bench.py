@@ -37,28 +37,20 @@ def calculate_ratio(a, b):
 def save_line(line, file_name, db_conn):
     if line.startswith(("Codec,", "Iterations,", "Overhead iterations,")):
         return
-    values = line.strip().split(",")
+    values = [file_name] + line.strip().split(",")
     # Appending Compression Ration
-    values.append(calculate_ratio(values[4], values[5]))
+    values.append(calculate_ratio(values[5], values[6]))
     # Appending encoding speed
-    values.append(calculate_ratio(values[4], values[3]))
+    values.append(calculate_ratio(values[5], values[4]))
     # Appending decoding speed
-    values.append(calculate_ratio(values[8], values[7]))
+    values.append(calculate_ratio(values[9], values[8]))
     # Append block size
     values.append(args.blocksize)
-    q_str = "insert into benchmarks values (" + "'" + file_name + "' "
     for i, v in enumerate(values):
-        if len(v) > 0 and i >= 3:
-            q_str += ", " + v
-        elif len(v) > 0 and i < 3:
-            q_str += ", " + "'" + v + "'"
-        else:
-            q_str += ", " + "NULL"
-    q_str += ");"
-    if __debug__:
-        print(q_str)
+        if len(v) <= 0:
+            values[i] = "NULL"
     c = db_conn.cursor()
-    c.execute(q_str)
+    c.execute("insert into benchmarks values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);", tuple(values))
     db_conn.commit()
     c.close()
 
@@ -85,7 +77,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="""Run fsbench on a large number of files.
                                     The results are stored in a sqlite3 database.
                                     All units in the database are in bytes
-                                    and milliseconds""")
+                                    and milliseconds.""")
 
     parser.add_argument("directory", metavar="root_dir",
                         help="The root directory to be benchmarked",
