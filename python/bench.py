@@ -9,7 +9,8 @@ def init_db():
     conn = sqlite3.connect(args.database)
     c = conn.cursor()
     c.execute("""create table if not exists benchmarks
-              (filename text, codec text COLLATE NOCASE, version text, args text,
+              (filename text, codec text COLLATE NOCASE,
+              version text, args text,
               e_time INTEGER, input_size INTEGER, output_size INTEGER,
               e_iters INTEGER, d_time INTEGER, d_output_size INTEGER,
               d_iters INTEGER, ratio REAL,
@@ -50,14 +51,16 @@ def save_line(line, file_name, db_conn):
         if len(v) <= 0:
             values[i] = "NULL"
     c = db_conn.cursor()
-    c.execute("insert into benchmarks values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);", tuple(values))
+    c.execute("""insert into benchmarks values
+              (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);""", tuple(values))
     db_conn.commit()
     c.close()
 
 
 def entry_exists_for_blocksize(db_conn, filename):
     c = db_conn.cursor()
-    c.execute("select * from benchmarks where filename like ? and block_size = ?",
+    c.execute("""select * from benchmarks where
+              filename like ? and block_size = ?""",
               (filename, args.blocksize))
     db_conn.commit()
     if not c.fetchone():
@@ -70,7 +73,8 @@ def entry_exists_for_blocksize(db_conn, filename):
 
 def algorithms_logged_for_file(db_conn, filename):
     c = db_conn.cursor()
-    c.execute("select codec from benchmarks where filename like ? and block_size = ?",
+    c.execute("""select codec from benchmarks
+              where filename like ? and block_size = ?""",
               (filename, args.blocksize))
     db_conn.commit()
     algs = c.fetchall()
@@ -86,29 +90,31 @@ def save(result):
     db_conn.close()
 
 
-def worker(file_path, logged_algorithms):
-    # Find the algorithms that were not yet measured
-    algs = [i for i in args.algorithms if i not in logged_algorithms]
-    if len(algs) == 0:
+def worker(file_path, algorithms):
+    if len(algorithms) == 0:
         return {"output": [], "file": file_path}
     if __debug__:
         print("benchmarking: " + file_path)
     try:
-        p = subprocess.check_output([args.fsbench] + algs
+        p = subprocess.check_output([args.fsbench] + algorithms
                                     + ["-b" + args.blocksize, "-c",
                                     "-w0", file_path],
                                     universal_newlines=True)
     except subprocess.CalledProcessError as e:
         print("fsbench error in process" + str(e.returncode) +
               " while processing file " + file_path)
+    except subprocess.TimeoutExpired:
+        print("Timeout Error")
+    except Exception:
+        print("Unknown error while calling fsbench")
     p = p.split("\n")
     # The array slice removes the meta information given by fsbench.
     return {"output": p[1:-4], "file": file_path}
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="""Run fsbench on a large number of files.
-                                    The results are stored in a sqlite3 database.
-                                    All units in the database are in bytes
+                                    The results are stored in a sqlite3
+                                     database. All units in the database are in bytes
                                     and milliseconds.""")
 
     parser.add_argument("directory", metavar="root_dir",
@@ -117,7 +123,7 @@ if __name__ == "__main__":
     parser.add_argument("--db-file", dest="database", default="benchmark.db",
                         help="""Where to store the sqlite
                         database with the results""")
-    parser.add_argument("algorithms", metavar="algorithms", nargs="*",
+    parser.add_argument("algorithms", metavar="algorithms", nargs="+",
                         help="Algorithms to pass on to fsbench")
     parser.add_argument("--fsbench", dest="fsbench", default="fsbench",
                         help="""Path to your fsbench executable.
@@ -146,7 +152,10 @@ if __name__ == "__main__":
         file_count += 1
         file_name = file_location.decode("utf-8").strip()
         algs = algorithms_logged_for_file(db_conn, file_name)
-        pool.apply_async(worker, (file_name, algs), callback=save)
+        # Find the algorithms that were not yet measured
+        algs = [i for i in args.algorithms if i.upper() not in algs]
+        if len(algs) > 0:
+            pool.apply_async(worker, (file_name, algs), callback=save)
     db_conn.close()
 
     pool.close()
