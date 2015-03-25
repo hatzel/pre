@@ -3,7 +3,7 @@ import subprocess
 from multiprocessing import Pool
 import sqlite3
 import argparse
-
+import cProfile
 
 def init_db():
     conn = sqlite3.connect(args.database)
@@ -15,6 +15,7 @@ def init_db():
               e_iters INTEGER, d_time INTEGER, d_output_size INTEGER,
               d_iters INTEGER, ratio REAL,
               e_speed INTEGER, d_speed, block_size);""")
+    c.execute("create index if not exists fileindex on benchmarks (filename, block_size);")
     conn.commit()
     c.close()
     conn.close()
@@ -74,7 +75,7 @@ def entry_exists_for_blocksize(db_conn, filename):
 def algorithms_logged_for_file(db_conn, filename):
     c = db_conn.cursor()
     c.execute("""select codec from benchmarks
-              where filename like ? and block_size = ?""",
+              where filename = ? and block_size = ?""",
               (filename, args.blocksize))
     db_conn.commit()
     algs = c.fetchall()
@@ -97,8 +98,8 @@ def worker(file_path, algorithms):
         print("benchmarking: " + file_path)
     try:
         p = subprocess.check_output([args.fsbench] + algorithms
-                                    + ["-b" + args.blocksize, "-c",
-                                    "-w0", file_path],
+                                    + ["-b" + args.blocksize, "-s0",
+                                       "-c", "-w0", file_path],
                                     universal_newlines=True)
     except subprocess.CalledProcessError as e:
         print("fsbench error in process" + str(e.returncode) +
@@ -114,7 +115,8 @@ def worker(file_path, algorithms):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="""Run fsbench on a large number of files.
                                     The results are stored in a sqlite3
-                                     database. All units in the database are in bytes
+                                     database. All units in the
+                                     database are in bytes
                                     and milliseconds.""")
 
     parser.add_argument("directory", metavar="root_dir",
@@ -154,6 +156,7 @@ if __name__ == "__main__":
         algs = algorithms_logged_for_file(db_conn, file_name)
         # Find the algorithms that were not yet measured
         algs = [i for i in args.algorithms if i.upper() not in algs]
+        print(" ", file_count, end="\r")
         if len(algs) > 0:
             pool.apply_async(worker, (file_name, algs), callback=save)
     db_conn.close()
