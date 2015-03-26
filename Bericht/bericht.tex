@@ -128,7 +128,24 @@ Find a way to detect and analyze suitable compression algorithms for the differe
 \chapter{Design and Implementation}
 \label{Design}
 %TODO write
+We implemented a script to test compression algorithms on multiple datasets based on the open source tool fsbench. 
+Fsbench is written in C++ and has the option to output the data it gathers, machine readable, as csv.
+However the tool is not capable of batch processing multiple files. This is where our script comes in, we intend to provide a simple interface to test entire directory structures and store them in easy to use formats.
+We decided to go with sqlite as a data store since it combines the simplicity of normal files with some of the performance and usage benefits of databases.
+Our script aims to speed up the benchmarking process by launching multiple instances of fsbench on the different cores of the system.
+For this we decided to use the python process pool implementation as it provides a simple way to split up the workload.
+Our multiprocessing model therefore just works by enqueuing all files that are to be benchmarked (represented by there filenames) into a queue. Each of the worker process will benchmark the compression of this file as soon at it is done with the previous task by starting an fsbench instance.
+After each finished instance of the benchmarks, meaning one run of fsbench, the main process will get the results and write them into a sqlite database.
 
+
+We provide a secondary script to help visualize the results. 
+The library pyplot to help with this visualization as it provides a rich interface for displaying diagrams, graphs and the like.
+The visualization script aims to provide some capabilities to filter the data and get a good first impression of the gathered data and was also used to create the diagrams in this document.
+
+Along the way we encountered a few issues, after first implementing the whole thing using pythons thread safe queue we noticed that we needed further abstraction in order to ensure a readable script. We used the python process pool to achieve this.
+
+Fsbench in it's non interactive mode, meaning the csv mode that is used for machine parsable results, also does not supply results such as the compression ratio but instead provides the data to calculate thes yourself. We decided to store data like this in the database since operations such as averaging the compression ratio of many files would otherwise be very slow.
+While views would have been an option we decided that some 20-30\% increase in result size would be more bearable than contently having slow querys while analyzing the data.
 
 \chapter{Conclusion}
 \label{Conclusion}
