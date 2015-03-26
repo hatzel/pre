@@ -49,6 +49,9 @@
 \renewcommand*{\appendixtocname}{Appendices}
 \renewcommand*{\appendixpagename}{Appendices}
 
+\newcommand*{\mcite}[1]{\footnote{\cite{#1}}}
+
+
 \begin{document}
 
 \begin{titlepage}
@@ -90,7 +93,7 @@
 \end{titlepage}
 
 \chapter*{Abstract}
-%TODO whatever
+%TODO write
 
 \thispagestyle{empty}
 
@@ -100,26 +103,39 @@
 
 \chapter{Introduction}
 \label{Introduction}
-%TODO
-bla ... + Analysis of compressionalgorithms
+%TODO ausbaubar, aber fuer ~3 uhr das beste, was ich zusammen bekomme.
+Since and even before the start of the age of modern computers (commercial codes for telegraphs) compression is of a certain importance. 
+The use case in the distant past was the shrinking of the package size for network communication.
+Many use cases for compression have been discovered since these times, among others the fast, light compression for running systems and slower but with higher compression ratios for long term storing.
+Especially but not only in High Performance Computing (HPC) we see an upcomming gap between the possibilities to create data and to store it in an appropriate way based on the shrinking ratio of computing speed and memory capacity \mcite{ExaStoSy}.
+%TODO besser formulieren!
+Looking at some numbers: The DKRZ (Deutsches Klimarechenzentrum) plans to extend its system with an perfomance increase with a factor around 20, but with a Storage capacity increase with a factor around 6 and a Archive capacity increase with a factor around 3 to 4 \mcite{ExaStoSy}. \\
+Of course compression can not solve this problem, but it can reduce the impact of this gap.
+But compression is a superordinate concept.
+There are many possible ways (algorithms) to achieve compression.
+The question that arises is for which use case which way is the adequate one.
+The number of ways to compress is infinite, this means the optimal solution to this problem is 
+not detectable.
+But it is possible to get an approximation through testing as many algortihms as possible an comparing the results.
+This is the main point of this analysis of compression algorithms in the HPC field.
 
 
 \chapter{Assignment}
 \label{Assignment}
-%TODO
-
+%TODO ausbauen
+Find a way to detect and analyze suitable compression algorithms for the different use cases in the HPC field.
 
 \chapter{Design and Implementation}
 \label{Design}
-%TODO
+%TODO write
 
 
 \chapter{Conclusion}
 \label{Conclusion}
-%TODO
+%TODO write
 
 \nocite{*}
-\bibliographystyle{plain}
+\bibliographystyle{alpha}
 \bibliography{literatur}
 
 %TODO : an ref s denken!
