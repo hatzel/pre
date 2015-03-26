@@ -3,7 +3,6 @@ import subprocess
 from multiprocessing import Pool
 import sqlite3
 import argparse
-import cProfile
 
 def init_db():
     conn = sqlite3.connect(args.database)
@@ -91,6 +90,14 @@ def save(result):
     db_conn.close()
 
 
+def is_data(line):
+    if line.startswith(("Codec,version", "Overhead iterations,", "Iterations,4")):
+        return False
+    elif len(line) < 5:
+        return False
+    else:
+        return True
+
 def worker(file_path, algorithms):
     if len(algorithms) == 0:
         return {"output": [], "file": file_path}
@@ -104,13 +111,14 @@ def worker(file_path, algorithms):
     except subprocess.CalledProcessError as e:
         print("fsbench error in process" + str(e.returncode) +
               " while processing file " + file_path)
+        p = e.output
     except subprocess.TimeoutExpired:
         print("Timeout Error")
     except Exception:
         print("Unknown error while calling fsbench")
     p = p.split("\n")
-    # The array slice removes the meta information given by fsbench.
-    return {"output": p[1:-4], "file": file_path}
+    p = filter(is_data, p)
+    return {"output": p, "file": file_path}
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="""Run fsbench on a large number of files.
@@ -156,7 +164,6 @@ if __name__ == "__main__":
         algs = algorithms_logged_for_file(db_conn, file_name)
         # Find the algorithms that were not yet measured
         algs = [i for i in args.algorithms if i.upper() not in algs]
-        print(" ", file_count, end="\r")
         if len(algs) > 0:
             pool.apply_async(worker, (file_name, algs), callback=save)
     db_conn.close()
