@@ -117,7 +117,7 @@ def worker(file_path, algorithms):
     except Exception:
         print("Unknown error while calling fsbench")
     p = p.split("\n")
-    p = filter(is_data, p)
+    p = [i for i in p if is_data(i)]
     return {"output": p, "file": file_path}
 
 if __name__ == "__main__":
