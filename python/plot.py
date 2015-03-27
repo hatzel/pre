@@ -51,7 +51,6 @@ class Plotter():
             where_clause = where_clause + " AND input_size <"
             + str(args.size_max)
         if args.pattern is not None:
-            print(args.pattern)
             where_clause = where_clause + " AND filename LIKE "
             + "'" + args.pattern + "'"
         q_str_avg = """SELECT {3}, avg({0}), avg({1}) FROM benchmarks
@@ -81,10 +80,8 @@ class Plotter():
     def draw(self):
         plt.scatter(self.x, self.y, marker='x')
         for d in zip(self.label, self.x, self.y):
-            print(d[0])
             plt.annotate(d[0], (d[1], d[2]), xytext=(-10, 10),
                          textcoords = 'offset points')
-        print("X-Name", self.x_name)
         plt.xlabel(get_label(self.x_name))
         plt.ylabel(get_label(self.y_name))
         plt.show()
