@@ -841,7 +841,7 @@
 \pgftext[x=4.515077in,y=0.799152in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 7z-deflate}%
 \end{pgfscope}%
 \begin{pgfscope}%
-\pgftext[x=4.726438in,y=0.793034in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 7z-deflate64}%
+\pgftext[x=4.906438in,y=0.675034in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 7z-deflate64}%
 \end{pgfscope}%
 \begin{pgfscope}%
 \pgftext[x=6.776295in,y=0.801888in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont bzip2}%
