@@ -51,8 +51,7 @@ class Plotter():
             where_clause = where_clause + " AND input_size <"
             + str(args.size_max)
         if args.pattern is not None:
-            where_clause = where_clause + " AND filename LIKE "
-            + "'" + args.pattern + "'"
+            where_clause = where_clause + " AND filename LIKE " + "'" + args.pattern + "'"
         q_str_avg = """SELECT {3}, avg({0}), avg({1}) FROM benchmarks
             {2} GROUP by {3};""".format(x, y, where_clause, label)
         conn = sqlite3.connect(args.database)
@@ -90,21 +89,16 @@ class Plotter():
         header = map(get_label, [self.label_name, self.x_name, self.y_name])
         return tabulate([list(i) for i in zip(*[self.label, self.x, self.y])],
                         header,
+                        floatfmt=".2f",
                         tablefmt=fmt)
 
 
 def conversion_factor(unit):
-    try:
-        return CONVERSION_RATIOS[unit]
-    except KeyError:
-        return 1
+    return CONVERSION_RATIOS.get(unit, 1)
 
 
 def get_label(name):
-    try:
-        return AXIS_LABLES[name]
-    except KeyError:
-        return "Unknown Metric"
+    return AXIS_LABLES.get(name, "Unknown Metric")
 
 p = Plotter(args.xaxis, args.yaxis, args.label)
 if args.table:
