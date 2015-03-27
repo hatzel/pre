@@ -64,7 +64,8 @@ class Plotter():
     def convert_units(self):
         self.x = list(map(lambda i: conversion_factor(self.x_name) * i, self.x))
         self.y = list(map(lambda i: conversion_factor(self.y_name) * i, self.y))
-        self.label = list(map(lambda i: conversion_factor(self.label_name) * i, self.label))
+        if conversion_factor(self.label_name) != 1:
+            self.label = list(map(lambda i: conversion_factor(self.label_name) * float(i), self.label))
     def draw(self):
         plt.scatter(self.x, self.y, marker='x')
         for d in zip(self.label, self.x,self.y):
