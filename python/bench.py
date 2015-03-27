@@ -4,6 +4,7 @@ from multiprocessing import Pool
 import sqlite3
 import argparse
 
+
 def init_db():
     conn = sqlite3.connect(args.database)
     c = conn.cursor()
@@ -78,7 +79,7 @@ def algorithms_logged_for_file(db_conn, filename):
               (filename, args.blocksize))
     db_conn.commit()
     algs = c.fetchall()
-    algs = [i[0] for i in algs]
+    algs = [i[0].upper() for i in algs]
     c.close()
     return algs
 
@@ -97,6 +98,7 @@ def is_data(line):
         return False
     else:
         return True
+
 
 def worker(file_path, algorithms):
     if len(algorithms) == 0:
