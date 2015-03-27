@@ -130,7 +130,7 @@ That is the main point of this analysis of compression algorithms in the HPC fie
 \chapter{Assignment and Methodology}
 \label{Assignment and Methodology}
 %TODO ausbauen
-\section{Assignment}
+\section*{Assignment}
 The main assignment for this project was the performance analysis for different compression algorithms in the HPC field. 
 \\
 Therefore we have to analyse them for the different use cases of compression in the HPC field. 
@@ -141,7 +141,7 @@ Furthermore we have to look at the decompression speed and the ways it effects o
 Analysing requires tools to get information about data. There are existing tools for testing multiple compression algorithms on a single file. So one task is to find a way to test multiple files with multiple algorithms.
 
 
-\section{Methodology}
+\section*{Methodology}
 We approach this through writing a script around a tool for testing multiple compression algorithms so we can use it for multiple files and store the results in a database. 
 \\
 Multiple files are needed to come to an appropriate amount of measurements.
@@ -174,18 +174,68 @@ Along the way we encountered a few issues, after first implementing the whole th
 Fsbench in it's non interactive mode, meaning the csv mode that is used for machine parsable results, also does not supply results such as the compression ratio but instead provides the data to calculate thes yourself. We decided to store data like this in the database since operations such as averaging the compression ratio of many files would otherwise be very slow.
 While views would have been an option we decided that some 20-30\% increase in result size would be more bearable than contently having slow querys while analyzing the data.
 
-\chapter{Results and Interpretation}
+\chapter{Measuring and Processing}
 \label{Results and Interpretation}
+%TODO continue
+\section*{Data Sources}
+The examined data sets come from 5 sources and contain different kinds of information.
+The first source is the KASCADE Cosmic Ray Data Centre (KCDC)\footnote{\url{https://kcdc.ikp.kit.edu/}} of the Karlsruhe Institute of Technology which provides data about cosmic rays. 
+The data is stored in an ASCII format. 
+\\
+The second source provides climatic data and is the Cera database from the DKRZ\footnote{\url{http://cera-www.dkrz.de/CERA/}}. 
+It is stored as in the NetCDF format. 
+\\
+The third amount of data sets is provided by the National Climatic Data Center (NCDC) and their global forecast system\footnote{\url{http://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs}}. 
+It provides weather data in the grb2 format with inv metadata. 
+\\
+The fourth source is the CERN\footnote{\url{http://opendata.cern.ch/}} which provides data from the Large Hadron Collider (LHC) in the root format (for their data analysis software). 
+\\
+Our final data set is the Silesia compression Corpus\footnote{\url{http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia}}, a standard data set for testing lossless compression algorithms, therefor it contains a mutitude of data and formats.
+\\
+\newpage
 
+\section*{Results}
+The first approach is to test algorithms on the Silesia Corpus to filter some inappropriate algorithms and test the rest on all of the data sets seperately and all the sets together.
+\\
+Testing on the Silesia Compression Corpus leads to the results in figure \ref{fig:sc_res}. The corresponding values are shown in table \ref{tab:sc_res}. \\
+
+
+%Data from benchmark_26031700.db, filtered with: %silesia%
 \begin{figure}[h]
 \begin{center}
-	\scalebox{0.7}{\input{plots/silesia_1.pgf}}
+	\scalebox{0.75}{\input{plots/silesia_1.pgf}}
 \end{center}
-\caption{silesia corpus results}
-\label{fig:silesia_res}
+\caption{SC results plot}
+\label{fig:sc_res}
 \end{figure}
 
+\quad \\
 
+%Data from benchmark_26031700.db, filtered with: %silesia%
+\begin{table}
+\begin{center}
+\scalebox{0.9}{
+\begin{tabular}{|l|r|r|}
+	\hline
+	Algorithm & Compression Ratio & Compression speed MByte/s \\ \hline
+	7z-deflate & 3.86071 & 7.79002 \\
+	7z-deflate64 & 3.9968 & 7.02566 \\
+	bzip2 & 5.31662 & 8.13183 \\
+	LZ4 & 2.25638 & 346.984 \\
+	lzjb & 1.75567 & 172.198 \\
+	lzmat & 3.24521 & 27.0998 \\
+	LZO & 2.24872 & 563.182 \\
+	zlib & 3.68763 & 21.2932 \\
+	ZSTD & 3.41519 & 171.622 \\ \hline
+\end{tabular}
+} 
+\caption{SC results table}
+\label{tab:sc_res}
+\end{center}
+\end{table}
+
+\section*{Interpretation}
+%TODO write sth
 
 \chapter{Conclusion}
 \label{Conclusion}
@@ -228,9 +278,5 @@ Wir versichern, dass wir die Arbeit selbstständig verfasst, die Arbeiten am Pro
 \bigskip
 
 %Hamburg, den 29.03.2015  \quad \dotfill \\ \\
-<<<<<<< HEAD
 
 \end{document}
-=======
-\end{document}
->>>>>>> 74ea59f7853716f5dc8ee4069ebca015de02a85c
