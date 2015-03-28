@@ -31,6 +31,7 @@
 \usepackage[subfigure,titles]{tocloft}
 \usepackage{units}
 \usepackage{pgf}
+\usepackage{amsmath}
 
 \lstset{
 	basicstyle=\ttfamily,
@@ -62,7 +63,7 @@
 		\bigskip
 		\bigskip
 
-		{\titlefont\Large --- Art der Arbeit ---\par}
+		{\titlefont\Large --- Projektbericht ---\par}
 
 		\bigskip
 		\bigskip
@@ -207,8 +208,7 @@ Our final data set is the Silesia compression Corpus\footnote{\url{http://sun.ae
 \newpage
 \section*{Block sizes}
 Compression algorithms in HPC would ideally work in parallel as otherwise resources of HPC-systems are not used to their full extend.
-A common approach for achieving parallelism in compression is by splitting up the data and compressing each the blocks individually on a different core or node.
-\cite{BenComp}
+A common approach for achieving parallelism in compression is by splitting up the data and compressing each the blocks individually on a different core or node\mcite{BenComp}.
 %TODO Sauce on dis.
 While we won't explore the implementations for splitting up the data and distributing it we can access the performance of different algorithms on smaller blocks of data to simulate their usage in parallel implementations.
 By default our tools test with a block size of 1.7 GB, meaning that the implementation of each algorithm gets 1.7GB of data at a time. 
@@ -220,10 +220,12 @@ To simulate realistic splitting of these files for multiprocessing we decided to
 As our data show, the impact of smaller block sizes is limited. Even for %TODO
 
 
-\section*{Results}
-The first approach is to test algorithms on the Silesia Corpus to filter some inappropriate algorithms. To decide which algorithms will be looked at in more detail.
-e Silesia Compression Corpus lead to the results in figure \ref{fig:sc_res}. 
+\section{Results}
+The first approach is to test algorithms on the Silesia Corpus to decide which algorithms will be looked at in more detail.
+\\
+Testing on the Silesia Compression Corpus leads to the results in figure \ref{fig:sc_res}. 
 The corresponding values are shown in table \ref{tab:sc_res}. \\
+
 
 %Data from benchmark_26031700.db, filtered with: %silesia%
 \begin{figure}[h]
@@ -235,9 +237,9 @@ The corresponding values are shown in table \ref{tab:sc_res}. \\
 \end{figure}
 
 \quad \\
-
 The graph looks at compression speed and compression ratio. A point to the top tight of another one means that, for the two metrics and our given dataset, the top right algorithms is flat out better. Given this dataset we decided to take a closer look at both lz4 and lzo since these are the algorithms that mostly focus on the speed and sacrifice compression ratio. We will take a look at zstd since it appears to make a uniquely balanced trade-off. \\
 For the other extreme of the speed compression ratio trade-off we decided to go with bzip2. Both 7z-deflate variants are slower than bzip2 on the given dataset therfore we decided to go with zlib as well as an algorithm a little more balanced towards the speed aspect.
+
 %Data from benchmark_26031700.db, filtered with: %silesia%
 \begin{table}
 \begin{center}
@@ -262,7 +264,35 @@ For the other extreme of the speed compression ratio trade-off we decided to go 
 \end{table}
 
 \section{Evaluation}
-In order to analyse these results we created the metric
+In order to evaluate these results a comparison metric is required.
+The resulting data can be interpreted as a set consiting of 2-tuples.
+To get the values into the same value domain we have to normalize the values.
+The base value for the normalization is the maximal value in its domain.
+This results in:
+\begin{center}
+	\(
+	   v(x) = \frac{v(x)}{max(v(x))}|\forall v \in \text{Results} \land \forall x \in \{ratio, speed\}
+	\)
+\end{center}
+
+Since the Data consists of only positive components we can interprete the tuple as a vector and use the length of the normalized vectors as metric. 
+Positive in this case connotes the greater the value the more efficient the algorithm.
+At last we need to add the ability to weight the results. 
+To achieve this we add a weighting vector whose elements will sum up to one and will be added as factors in the metric. 
+This streches the unit circle to desired relations between compression speed and ratio.
+For the normalized result vector \(V = (\text{compression ratio}, \text{speed})\) and the weighting vector \(W = (\text{compression ratio weighting}, \text{speed weighting})\) this can be expressed as:
+\begin{center}
+	\(
+	\sum\limits^{1}_{i=0} \sqrt{(W(i) \cdot V(i))^2}
+	\)
+\end{center}
+while
+\begin{center}
+	\(
+	\sum\limits^{1}_{i=0}W(i) = 1
+	\)
+\end{center}
+If we also want to adress decompression we can extend every vector with a third value for decompression speed.
 
 	
 \chapter{Discussion}
