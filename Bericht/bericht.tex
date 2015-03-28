@@ -31,6 +31,7 @@
 \usepackage[subfigure,titles]{tocloft}
 \usepackage{units}
 \usepackage{pgf}
+\usepackage{amsmath}
 
 \lstset{
 	basicstyle=\ttfamily,
@@ -62,7 +63,7 @@
 		\bigskip
 		\bigskip
 
-		{\titlefont\Large --- Art der Arbeit ---\par}
+		{\titlefont\Large --- Projektbericht ---\par}
 
 		\bigskip
 		\bigskip
@@ -261,7 +262,35 @@ The corresponding values are shown in table \ref{tab:sc_res}. \\
 \end{table}
 
 \section{Evaluation}
-In order to analyse these results we created the metric
+In order to evaluate these results a comparison metric is required.
+The resulting data can be interpreted as a set consiting of 2-tuples.
+To get the values into the same value domain we have to normalize the values.
+The base value for the normalization is the maximal value in its domain.
+This results in:
+\begin{center}
+	\(
+	   v(x) = \frac{v(x)}{max(v(x))}|\forall v \in \text{Results} \land \forall x \in \{ratio, speed\}
+	\)
+\end{center}
+
+Since the Data consists of only positive components we can interprete the tuple as a vector and use the length of the normalized vectors as metric. 
+Positive in this case connotes the greater the value the more efficient the algorithm.
+At last we need to add the ability to weight the results. 
+To achieve this we add a weighting vector whose elements will sum up to one and will be added as factors in the metric. 
+This streches the unit circle to desired relations between compression speed and ratio.
+For the normalized result vector \(V = (\text{compression ratio}, \text{speed})\) and the weighting vector \(W = (\text{compression ratio weighting}, \text{speed weighting})\) this can be expressed as:
+\begin{center}
+	\(
+	\sum\limits^{1}_{i=0} \sqrt{(W(i) \cdot V(i))^2}
+	\)
+\end{center}
+while
+\begin{center}
+	\(
+	\sum\limits^{1}_{i=0}W(i) = 1
+	\)
+\end{center}
+If we also want to adress decompression we can extend every vector with a third value for decompression speed.
 
 	
 \chapter{Discussion}
