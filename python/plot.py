@@ -35,6 +35,9 @@ parser.add_argument("label", help="""The metric displayed as the label on
 parser.add_argument("--pattern", help="""Only take files into account
                     where filename matches the given pattern.
                     %% can be used as a wildcard.""")
+parser.add_argument("-a", dest="algorithms", action="append", help="""Algorithms
+                    to query data for. Can be given multiple times. If not
+                    given, all available data will be used.""")
 parser.add_argument("--table", help="""Specify a file to which
                     to append the data as a latex tabular.""")
 args = parser.parse_args()
@@ -52,6 +55,8 @@ class Plotter():
             + str(args.size_max)
         if args.pattern is not None:
             where_clause = where_clause + " AND filename LIKE " + "'" + args.pattern + "'"
+        if args.algorithms is not None:
+            where_clause = where_clause + " AND codec IN (" + ",".join(list(map(lambda s: '"' + s + '"', args.algorithms))) + ")"
         q_str_avg = """SELECT {3}, avg({0}), avg({1}) FROM benchmarks
             {2} GROUP by {3};""".format(x, y, where_clause, label)
         conn = sqlite3.connect(args.database)

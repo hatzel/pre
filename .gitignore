@@ -12,3 +12,6 @@
 *.blg
 *.bbl
 *.bak
+
+# bench.py results
+benchmark.db
