@@ -224,7 +224,6 @@ The first approach is to test algorithms on the Silesia Corpus to filter some in
 e Silesia Compression Corpus lead to the results in figure \ref{fig:sc_res}. 
 The corresponding values are shown in table \ref{tab:sc_res}. \\
 
-
 %Data from benchmark_26031700.db, filtered with: %silesia%
 \begin{figure}[h]
 \begin{center}
@@ -236,6 +235,8 @@ The corresponding values are shown in table \ref{tab:sc_res}. \\
 
 \quad \\
 
+The graph looks at compression speed and compression ratio. A point to the top tight of another one means that, for the two metrics and our given dataset, the top right algorithms is flat out better. Given this dataset we decided to take a closer look at both lz4 and lzo since these are the algorithms that mostly focus on the speed and sacrifice compression ratio. We will take a look at zstd since it appears to make a uniquely balanced trade-off. \\
+For the other extreme of the speed compression ratio trade-off we decided to go with bzip2. Both 7z-deflate variants are slower than bzip2 on the given dataset therfore we decided to go with zlib aswell as an algorithm a little more balanced towards the speed aspect.
 %Data from benchmark_26031700.db, filtered with: %silesia%
 \begin{table}
 \begin{center}
@@ -245,16 +246,16 @@ The corresponding values are shown in table \ref{tab:sc_res}. \\
 	Algorithm & Compression Ratio & Compression speed MByte/s \\ \hline
 	7z-deflate & 3.86 & 7.79 \\
 	7z-deflate64 & 4.00 & 7.03 \\
-	bzip2 & 5.32 & 8.13 \\
-	LZ4 & 2.26 & 346.98 \\
+	\textbf{bzip2} & 5.32 & 8.13 \\
+	\textbf{LZ4} & 2.26 & 346.98 \\
 	lzjb & 1.76 & 172.20 \\
 	lzmat & 3.25 & 27.10 \\
-	LZO & 2.25 & 563.18 \\
-	zlib & 3.69 & 21.29 \\
-	ZSTD & 3.42 & 171.62 \\ \hline
+	\textbf{LZO} & 2.25 & 563.18 \\
+	\textbf{zlib} & 3.69 & 21.29 \\
+	\textbf{ZSTD} & 3.42 & 171.62 \\ \hline
 \end{tabular}
 } 
-\caption{SC results table}
+\caption{SC results table, bold algorithms to be tested further}
 \label{tab:sc_res}
 \end{center}
 \end{table}
