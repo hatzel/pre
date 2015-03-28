@@ -207,7 +207,8 @@ Our final data set is the Silesia compression Corpus\footnote{\url{http://sun.ae
 \newpage
 \section*{Block sizes}
 Compression algorithms in HPC would ideally work in parallel as otherwise resources of HPC-systems are not used to their full extend.
-The main approach for achieving parallelism in compression is by splitting up the data and compressing each the blocks individually on a different core or node.
+A common approach for achieving parallelism in compression is by splitting up the data and compressing each the blocks individually on a different core or node.
+\cite{BenComp}
 %TODO Sauce on dis.
 While we won't explore the implementations for splitting up the data and distributing it we can access the performance of different algorithms on smaller blocks of data to simulate their usage in parallel implementations.
 By default our tools test with a block size of 1.7 GB, meaning that the implementation of each algorithm gets 1.7GB of data at a time. 
@@ -236,7 +237,7 @@ The corresponding values are shown in table \ref{tab:sc_res}. \\
 \quad \\
 
 The graph looks at compression speed and compression ratio. A point to the top tight of another one means that, for the two metrics and our given dataset, the top right algorithms is flat out better. Given this dataset we decided to take a closer look at both lz4 and lzo since these are the algorithms that mostly focus on the speed and sacrifice compression ratio. We will take a look at zstd since it appears to make a uniquely balanced trade-off. \\
-For the other extreme of the speed compression ratio trade-off we decided to go with bzip2. Both 7z-deflate variants are slower than bzip2 on the given dataset therfore we decided to go with zlib aswell as an algorithm a little more balanced towards the speed aspect.
+For the other extreme of the speed compression ratio trade-off we decided to go with bzip2. Both 7z-deflate variants are slower than bzip2 on the given dataset therfore we decided to go with zlib as well as an algorithm a little more balanced towards the speed aspect.
 %Data from benchmark_26031700.db, filtered with: %silesia%
 \begin{table}
 \begin{center}
