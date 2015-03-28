@@ -131,7 +131,7 @@ That is the main point of this analysis of compression algorithms in the HPC fie
 \label{Assignment and Methodology}
 %TODO ausbauen
 \section*{Assignment}
-The main assignment for this project was the performance analysis for different compression algorithms in the HPC field. 
+The main assignment for this project is the performance analysis for different compression algorithms in the HPC field. 
 \\
 Therefore we have to analyse them for the different use cases of compression in the HPC field. 
 The main use cases are the storage in the life system and the storage in the archive system.
@@ -142,13 +142,13 @@ Analysing requires tools to get information about data. There are existing tools
 
 
 \section*{Methodology}
-We approach this through writing a script around a tool for testing multiple compression algorithms so we can use it for multiple files and store the results in a database. 
+We approached this through writing a script around a tool for testing multiple compression algorithms so we could use it for multiple files and store the results in a database. 
 \\
-Multiple files are needed to come to an appropriate amount of measurements.
-For this purpose different datasets from scientific sources are required.
+Multiple files were necessary to get an appropriate amount of measurements.
+For this purpose different datasets from scientific sources were required.
 \\
-After selecting and getting suitable data sets and testing algorithms on them with our script we need to analyse the different outputs.
-To do so we need a metric which can be weighted, so it is possible to map the results to our use cases in an appropriate way. \\
+After selecting and getting suitable data sets and testing algorithms on them with our script we needed to analyse the different outputs.
+To do so we created a metric which can be weighted, so it is possible to map the results to our use cases in an appropriate way. \\
 
 \chapter{Design and Implementation}
 \label{Design}
@@ -175,9 +175,9 @@ Fsbench in it's non interactive mode, meaning the csv mode that is used for mach
 While views would have been an option we decided that some 20-30\% increase in result size would be more bearable than contently having slow querys while analyzing the data.
 
 \chapter{Measuring and Processing}
-\label{Results and Interpretation}
+\label{Measuring and Processing}
 %TODO continue
-\section*{Data Sources}
+\section{Data Sources}
 The examined data sets come from 5 sources and contain different kinds of information.
 The first source is the KASCADE Cosmic Ray Data Centre (KCDC)\footnote{\url{https://kcdc.ikp.kit.edu/}} of the Karlsruhe Institute of Technology which provides data about cosmic rays. 
 The data is stored as text in ASCII encoding. 
@@ -221,8 +221,8 @@ As our data show, the impact of smaller block sizes is limited. Even for %TODO
 
 \section*{Results}
 The first approach is to test algorithms on the Silesia Corpus to filter some inappropriate algorithms. To decide which algorithms will be looked at in more detail.
-\\
-Testing on the Silesia Compression Corpus leads to the results in figure \ref{fig:sc_res}. The corresponding values are shown in table \ref{tab:sc_res}. \\
+e Silesia Compression Corpus lead to the results in figure \ref{fig:sc_res}. 
+The corresponding values are shown in table \ref{tab:sc_res}. \\
 
 
 %Data from benchmark_26031700.db, filtered with: %silesia%
@@ -243,15 +243,15 @@ Testing on the Silesia Compression Corpus leads to the results in figure \ref{fi
 \begin{tabular}{|l|r|r|}
 	\hline
 	Algorithm & Compression Ratio & Compression speed MByte/s \\ \hline
-	7z-deflate & 3.86071 & 7.79002 \\
-	7z-deflate64 & 3.9968 & 7.02566 \\
-	bzip2 & 5.31662 & 8.13183 \\
-	LZ4 & 2.25638 & 346.984 \\
-	lzjb & 1.75567 & 172.198 \\
-	lzmat & 3.24521 & 27.0998 \\
-	LZO & 2.24872 & 563.182 \\
-	zlib & 3.68763 & 21.2932 \\
-	ZSTD & 3.41519 & 171.622 \\ \hline
+	7z-deflate & 3.86 & 7.79 \\
+	7z-deflate64 & 4.00 & 7.03 \\
+	bzip2 & 5.32 & 8.13 \\
+	LZ4 & 2.26 & 346.98 \\
+	lzjb & 1.76 & 172.20 \\
+	lzmat & 3.25 & 27.10 \\
+	LZO & 2.25 & 563.18 \\
+	zlib & 3.69 & 21.29 \\
+	ZSTD & 3.42 & 171.62 \\ \hline
 \end{tabular}
 } 
 \caption{SC results table}
@@ -259,8 +259,13 @@ Testing on the Silesia Compression Corpus leads to the results in figure \ref{fi
 \end{center}
 \end{table}
 
-\section*{Interpretation}
-%TODO write sth
+\section{Evaluation}
+In order to analyse these results we created the metric
+
+	
+\chapter{Discussion}
+\label{Discussion}
+
 
 \chapter{Conclusion}
 \label{Conclusion}
@@ -278,13 +283,6 @@ Testing on the Silesia Compression Corpus leads to the results in figure \ref{fi
 \lstlistoflistings
 
 %TODO : was?
-\begin{appendices}
-
-\chapter{Appendix Chapter}
-
-
-\end{appendices}
-
 \newpage
 
 \thispagestyle{empty}
