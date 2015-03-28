@@ -131,7 +131,7 @@ That is the main point of this analysis of compression algorithms in the HPC fie
 \label{Assignment and Methodology}
 %TODO ausbauen
 \section*{Assignment}
-The main assignment for this project was the performance analysis for different compression algorithms in the HPC field. 
+The main assignment for this project is the performance analysis for different compression algorithms in the HPC field. 
 \\
 Therefore we have to analyse them for the different use cases of compression in the HPC field. 
 The main use cases are the storage in the life system and the storage in the archive system.
@@ -142,13 +142,13 @@ Analysing requires tools to get information about data. There are existing tools
 
 
 \section*{Methodology}
-We approach this through writing a script around a tool for testing multiple compression algorithms so we can use it for multiple files and store the results in a database. 
+We approached this through writing a script around a tool for testing multiple compression algorithms so we could use it for multiple files and store the results in a database. 
 \\
-Multiple files are needed to come to an appropriate amount of measurements.
-For this purpose different datasets from scientific sources are required.
+Multiple files were necessary to get an appropriate amount of measurements.
+For this purpose different datasets from scientific sources were required.
 \\
-After selecting and getting suitable data sets and testing algorithms on them with our script we need to analyse the different outputs.
-To do so we need a metric which can be weighted, so it is possible to map the results to our use cases in an appropriate way. \\
+After selecting and getting suitable data sets and testing algorithms on them with our script we needed to analyse the different outputs.
+To do so we created a metric which can be weighted, so it is possible to map the results to our use cases in an appropriate way. \\
 
 \chapter{Design and Implementation}
 \label{Design}
@@ -175,9 +175,9 @@ Fsbench in it's non interactive mode, meaning the csv mode that is used for mach
 While views would have been an option we decided that some 20-30\% increase in result size would be more bearable than contently having slow querys while analyzing the data.
 
 \chapter{Measuring and Processing}
-\label{Results and Interpretation}
+\label{Measuring and Processing}
 %TODO continue
-\section*{Data Sources}
+\section{Data Sources}
 The examined data sets come from 5 sources and contain different kinds of information.
 The first source is the KASCADE Cosmic Ray Data Centre (KCDC)\footnote{\url{https://kcdc.ikp.kit.edu/}} of the Karlsruhe Institute of Technology which provides data about cosmic rays. 
 The data is stored in an ASCII format. 
@@ -194,10 +194,11 @@ Our final data set is the Silesia compression Corpus\footnote{\url{http://sun.ae
 \\
 \newpage
 
-\section*{Results}
-The first approach is to test algorithms on the Silesia Corpus to filter some inappropriate algorithms and test the rest on all of the data sets seperately and all the sets together.
+\section{Results}
+The first approach was to test algorithms on the Silesia Corpus to filter some inappropriate algorithms and test the rest on all the data sets seperately and all the sets together.
 \\
-Testing on the Silesia Compression Corpus leads to the results in figure \ref{fig:sc_res}. The corresponding values are shown in table \ref{tab:sc_res}. \\
+Testing on the Silesia Compression Corpus lead to the results in figure \ref{fig:sc_res}. 
+The corresponding values are shown in table \ref{tab:sc_res}. \\
 
 
 %Data from benchmark_26031700.db, filtered with: %silesia%
@@ -234,8 +235,11 @@ Testing on the Silesia Compression Corpus leads to the results in figure \ref{fi
 \end{center}
 \end{table}
 
-\section*{Interpretation}
-%TODO write sth
+\section{evaluation}
+	
+\chapter{Discussion}
+\label{Discussion}
+
 
 \chapter{Conclusion}
 \label{Conclusion}
@@ -253,13 +257,6 @@ Testing on the Silesia Compression Corpus leads to the results in figure \ref{fi
 \lstlistoflistings
 
 %TODO : was?
-\begin{appendices}
-
-\chapter{Appendix Chapter}
-
-
-\end{appendices}
-
 \newpage
 
 \thispagestyle{empty}
