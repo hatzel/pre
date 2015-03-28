@@ -155,9 +155,9 @@ To do so we created a metric which can be weighted, so it is possible to map the
 %TODO expand
 We implemented a script to test compression algorithms on multiple datasets based on the open source tool fsbench. 
 Fsbench is written in C++ and has the option to output the data it gathers, machine readable, as csv.
-However the tool is not capable of batch processing multiple files. 
+However the tool is not capable of batch processing multiple files. \\
 This is where our script comes in, we intend to provide a simple interface to test entire directory structures and store them in easy to use formats.
-We decided to go with sqlite as a data store since it combines the simplicity of normal files with some of the performance and usage benefits of databases.
+We decided to go with sqlite as a data store since it combines the simplicity of normal files with some of the performance and usage benefits of databases. \\
 Our script aims to speed up the benchmarking process by launching multiple instances of fsbench on the different cores of the system.
 For this we decided to use the python process pool implementation as it provides a simple way to split up the workload.
 Our multiprocessing model therefore just works by enqueuing all files that are to be benchmarked (represented by there filenames) into a queue.
@@ -180,19 +180,44 @@ While views would have been an option we decided that some 20-30\% increase in r
 \section{Data Sources}
 The examined data sets come from 5 sources and contain different kinds of information.
 The first source is the KASCADE Cosmic Ray Data Centre (KCDC)\footnote{\url{https://kcdc.ikp.kit.edu/}} of the Karlsruhe Institute of Technology which provides data about cosmic rays. 
-The data is stored in an ASCII format. 
+The data is stored as text in ASCII encoding. 
+It's a table represented with space delimited numbers. Only small parts of the ASCII range are actually used for most of the file. Only at the beginning of the file there are headlines for each column, consisting of text, the rest of the files consists of mostly numbers.
+Therefore the file is expected to be very compressible.
 \\
+
 The second source provides climatic data and is the Cera database from the DKRZ\footnote{\url{http://cera-www.dkrz.de/CERA/}}. 
-It is stored as in the NetCDF format. 
+It is stored as in the NetCDF format.
+NetCDF is a binary format for storing array-like data that contains meta data describing the stored data.
+%TODO what about internal compression of netcdf 
+%TODO source: https://www.unidata.ucar.edu/software/netcdf/docs/netcdf.html#Introduction
 \\
-The third amount of data sets is provided by the National Climatic Data Center (NCDC) and their global forecast system\footnote{\url{http://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs}}. 
-It provides weather data in the grb2 format with inv metadata. 
+
+The third set of data sets is provided by the National Climatic Data Center (NCDC) and their global forecast system\footnote{\url{http://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs}}. 
+We used data weather data provided in the grb2 format with inv files for metadata. 
 \\
-The fourth source is the CERN\footnote{\url{http://opendata.cern.ch/}} which provides data from the Large Hadron Collider (LHC) in the root format (for their data analysis software). 
+
+The fourth source is the CERN\footnote{\url{http://opendata.cern.ch/}} which provides data from the Large Hadron Collider (LHC) in the root format (for their data analysis software).
+ROOT files aim to be very compressed binary files. Therefore little compression is to be expected, but many files in HPC may be precompressed, therefore performance on compressed data could also be a very interesting metric.
+% TODO source here: https://root.cern.ch/drupal/content/root-files-1
 \\
-Our final data set is the Silesia compression Corpus\footnote{\url{http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia}}, a standard data set for testing lossless compression algorithms, therefor it contains a mutitude of data and formats.
+
+Our final data set is the Silesia compression Corpus\footnote{\url{http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia}}, a standard data set for testing lossless compression algorithms, therefor it contains a mutitude of data and formats. We used this to gain an initial impression of the algorithms and which aspects they excel in. While this dataset aims to be as diverse as possible, some of the datasets are also typical for HPC.
 \\
+
 \newpage
+\section*{Block sizes}
+Compression algorithms in HPC would ideally work in parallel as otherwise resources of HPC-systems are not used to their full extend.
+The main approach for achieving parallelism in compression is by splitting up the data and compressing each the blocks individually on a different core or node.
+%TODO Sauce on dis.
+While we won't explore the implementations for splitting up the data and distributing it we can access the performance of different algorithms on smaller blocks of data to simulate their usage in parallel implementations.
+By default our tools test with a block size of 1.7 GB, meaning that the implementation of each algorithm gets 1.7GB of data at a time. 
+Some algorithms may split up this data on their own, like lz4 with it's sliding window. %TODO source for lz4
+To simulate realistic splitting of these files for multiprocessing we decided to go with blocksizes of 500MB, 100MB, 10MB and 1MB.
+
+%TODO put data here
+
+As our data show, the impact of smaller block sizes is limited. Even for %TODO
+
 
 \section{Results}
 The first approach was to test algorithms on the Silesia Corpus to filter some inappropriate algorithms and test the rest on all the data sets seperately and all the sets together.
