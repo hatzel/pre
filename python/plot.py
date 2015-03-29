@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import sqlite3
 import argparse
 from tabulate import tabulate
+import matplotlib.patches as patches
 
 AXIS_LABLES = {
     "e_speed": "Compression speed MByte/s",
@@ -66,7 +67,7 @@ class Plotter():
             where_clause = where_clause + " AND codec IN (" + ",".join(list(map(lambda s: '"' + s + '"', args.algorithms))) + ")"
         if self.x_name == "d_speed" or self.y_name == "d_speed":
             where_clause += " AND ratio > 1.01"
-
+        self.where_clause = where_clause
         group_clause = ""
         x_str = x
         y_str = y
@@ -106,12 +107,20 @@ class Plotter():
 
     def draw(self):
         def to_color(a):
-            return COLOR_MAP.get(a.lower(), "#000000")
+            if not args.grouping:
+                return COLOR_MAP.get(a.lower(), "#000000")
+            else:
+                return "blue"
 
+        algs = get_algs(self.where_clause)
+        legend_data = [patches.Patch(color=to_color(i[0]), label=i[0]) for i in algs]
         plt.scatter(self.x, self.y, marker='x', c=list(map(to_color, self.label)))
-        for d in zip(self.label, self.x, self.y):
-            plt.annotate(d[0], (d[1], d[2]), xytext=(-10, 10),
-                         textcoords = 'offset points')
+        if args.grouping:
+            for d in zip(self.label, self.x, self.y):
+                plt.annotate(d[0], (d[1], d[2]), xytext=(-10, 10),
+                            textcoords = 'offset points')
+        else:
+            plt.legend(handles=legend_data)
         plt.xlabel(get_label(self.x_name))
         plt.ylabel(get_label(self.y_name))
         plt.show()
@@ -127,6 +136,16 @@ class Plotter():
 def conversion_factor(unit):
     return CONVERSION_RATIOS.get(unit, 1)
 
+def get_algs(where):
+    conn = sqlite3.connect(args.database)
+    c = conn.cursor()
+    qry = "select codec from benchmarks " + where + " group by codec;"
+    print(qry)
+    c.execute(qry)
+    result = c.fetchall()
+    c.close()
+    conn.close()
+    return result
 
 def get_label(name):
     return AXIS_LABLES.get(name, "Unknown Metric")
