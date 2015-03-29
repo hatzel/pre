@@ -17,8 +17,11 @@ CONVERSION_RATIOS = {
     "block_size": 1/1000000
 }
 COLOR_MAP = {
-    "lz4": "#ff0000",
-    "bzip2": "#0000ff"
+    "lz4": "#592941",
+    "bzip2": "#3F9CAA",
+    "lzo": "#498467",
+    "zstd": "#95D383",
+    "zlib": "#EDE5A6"
 }
 parser = argparse.ArgumentParser(description="""Visualize the results of your
                                  benchmarks from a sqlite database. Currently
