@@ -32,6 +32,7 @@
 \usepackage{units}
 \usepackage{pgf}
 \usepackage{amsmath}
+\usepackage{placeins}
 
 \lstset{
 	basicstyle=\ttfamily,
@@ -90,7 +91,7 @@
 		Betreuer: & Michael Kuhn \\
 			& Konstantinos Chasapis \\
 		\\
-		Hamburg, den 29.03.2015
+		Hamburg, den 30.3.2015
 	\end{tabular}\par}
 \end{titlepage}
 
@@ -235,6 +236,8 @@ The corresponding values are shown in table \ref{tab:sc_res}. \\
 \caption{SC results plot}
 \label{fig:sc_res}
 \end{figure}
+
+\FloatBarrier
 
 \quad \\
 The graph looks at compression speed and compression ratio. A point to the top tight of another one means that, for the two metrics and our given dataset, the top right algorithms is flat out better. Given this dataset we decided to take a closer look at both lz4 and lzo since these are the algorithms that mostly focus on the speed and sacrifice compression ratio. We will take a look at zstd since it appears to make a uniquely balanced trade-off. \\
