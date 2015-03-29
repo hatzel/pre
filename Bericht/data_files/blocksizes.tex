@@ -1,0 +1,30 @@
+%%Data from 28_03_01_19.db, blocksize
+\begin{figure}[h]
+\begin{center}
+	\scalebox{0.75}{\input{plots/blocksize_1.pgf}}
+\end{center}
+\caption{Compression performance with different block sizes.}
+\label{fig:sc_res}
+\end{figure}
+
+
+\begin{table}
+\begin{center}
+\scalebox{0.9}{
+\begin{tabular}{|r|r|r|}
+\hline
+ Filesystem block size in MB &   Compression Ratio &   Compression speed MByte/s \\
+\hline
+	                    0.10 &                2.68 &                      396.28 \\
+	                    1.00 &                2.84 &                      314.51 \\
+	                   10.00 &                2.86 &                      320.48 \\
+	                  100.00 &                2.86 &                      304.60 \\
+	                  500.00 &                2.86 &                      293.22 \\
+	                 1717.99 &                2.86 &                      299.96 \\
+\hline
+\end{tabular}
+} 
+\caption{Impact different block sizes}
+\label{tab:bsizes}
+\end{center}
+\end{table}
