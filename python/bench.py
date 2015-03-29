@@ -9,12 +9,12 @@ def init_db():
     conn = sqlite3.connect(args.database)
     c = conn.cursor()
     c.execute("""create table if not exists benchmarks
-              (filename text, codec text COLLATE NOCASE,
-              version text, args text,
+              (filename TEXT, codec TEXT COLLATE NOCASE,
+              version TEXT, args TEXT,
               e_time INTEGER, input_size INTEGER, output_size INTEGER,
               e_iters INTEGER, d_time INTEGER, d_output_size INTEGER,
               d_iters INTEGER, ratio REAL,
-              e_speed INTEGER, d_speed, block_size);""")
+              e_speed INTEGER, d_speed INTEGER, block_size INTEGER);""")
     c.execute("create index if not exists fileindex on benchmarks (filename, block_size);")
     conn.commit()
     c.close()
