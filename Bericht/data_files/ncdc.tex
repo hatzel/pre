@@ -1,0 +1,29 @@
+%%Data from 28_03_01_19.db, filtered with: %.grb2
+
+\begin{figure}[h]
+\begin{center}
+	\scalebox{0.75}{\input{plots/weather_data.pgf}}
+\end{center}
+\caption{NCDC Data Sets, Compression Speed}
+\label{fig:ncdc_comp}
+\end{figure}
+
+\begin{table}
+\begin{center}
+\scalebox{0.9}{
+\begin{tabular}{|l|r|r|}
+\hline
+ Algorithm        &   Compression Ratio &   Compression speed MByte/s \\
+\hline
+ bzip2            &                1.01 &                        4.52 \\
+ LZ4              &                1.01 &                     2343.55 \\
+ LZO              &                1.01 &                     3334.64 \\
+ zlib             &                1.01 &                       30.11 \\
+ ZSTD             &                1.01 &                      587.93 \\
+\hline
+\end{tabular}
+} 
+\caption{Results, NCDC Weather Data Sets}
+\label{tab:weather_data}
+\end{center}
+\end{table}

@@ -1,0 +1,29 @@
+%%Data from 28_03_01_19.db, filtered with: %.root
+\begin{figure}[h]
+\begin{center}
+	\scalebox{0.75}{\input{plots/root_1.pgf}}
+\end{center}
+\caption{Cern Data Sets, Compression Speed}
+\label{fig:cern_comp}
+\end{figure}
+
+
+\begin{table}
+\begin{center}
+\scalebox{0.9}{
+\begin{tabular}{|l|r|r|}
+\hline
+ Algorithm        &   Compression Ratio &   Compression speed MByte/s \\
+\hline
+ bzip2            &                1.12 &                        5.08 \\
+ LZ4              &                1.09 &                     1374.33 \\
+ LZO              &                1.05 &                     2236.58 \\
+ zlib             &                1.10 &                       31.90 \\
+ ZSTD             &                1.14 &                      363.91 \\
+\hline
+\end{tabular}
+} 
+\caption{Results, Cern Data Sets}
+\label{tab:cern_data}
+\end{center}
+\end{table}

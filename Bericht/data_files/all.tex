@@ -1,0 +1,36 @@
+%%Data from 28_03_01_19.db, filtered with: None
+\begin{figure}[h]
+\begin{center}
+	\scalebox{0.75}{\input{plots/all_1.pgf}}
+\end{center}
+\caption{All Data Sets, Compression Speed}
+\label{fig:all_comp}
+\end{figure}
+
+\begin{figure}[h]
+\begin{center}
+	\scalebox{0.75}{\includegraphics[scale=1]{plots/all_decompression.png}}
+\end{center}
+\caption{All Data Sets, Decompression Speed}
+\label{fig:all_decomp}
+\end{figure}
+
+\begin{table}
+\begin{center}
+\scalebox{0.9}{
+\begin{tabular}{|l|r|r|r|}
+	\hline
+	Algorithm        &   Compression Ratio &   Compression speed MByte/s  &   Decompression speed MByte/s \\
+	\hline
+	bzip2            &                4.17 &                        7.40  &                         23.46 \\
+	LZ4              &                2.00 &                      514.48  &                     144626.61 \\
+	LZO              &                2.01 &                      828.04  &                     322814.64 \\
+	zlib             &                3.09 &                       18.95  &                        245.94 \\
+	ZSTD             &                2.88 &                      238.66  &                     287024.61 \\
+	\hline
+\end{tabular}
+} 
+\caption{Results, all Data Sets}
+\label{tab:all_data}
+\end{center}
+\end{table}
