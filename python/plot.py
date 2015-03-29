@@ -17,11 +17,11 @@ CONVERSION_RATIOS = {
     "block_size": 1/1000000
 }
 COLOR_MAP = {
-    "lz4": "#592941",
-    "bzip2": "#3F9CAA",
-    "lzo": "#498467",
+    "lz4": "#ff0000",
+    "bzip2": "#aadd00",
+    "lzo": "#0061f2",
     "zstd": "#95D383",
-    "zlib": "#EDE5A6"
+    "zlib": "#000040"
 }
 parser = argparse.ArgumentParser(description="""Visualize the results of your
                                  benchmarks from a sqlite database. Currently
@@ -60,7 +60,7 @@ class Plotter():
         self.x_name = x
         self.y_name = y
         self.label_name = label
-        where_clause = "WHERE input_size >" + str(args.size_min)
+        where_clause = "WHERE " + x + " != \"NULL\" AND " + y + " != \"NULL\" AND input_size > " + str(args.size_min)
         if int(args.size_max) > -1:
             where_clause = where_clause + " AND input_size <"
             + str(args.size_max)
