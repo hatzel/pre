@@ -209,16 +209,48 @@ Our final data set is the Silesia compression Corpus\footnote{\url{http://sun.ae
 \newpage
 \section*{Block sizes}
 Compression algorithms in HPC would ideally work in parallel as otherwise resources of HPC-systems are not used to their full extend.
-A common approach for achieving parallelism in compression is by splitting up the data and compressing each the blocks individually on a different core or node\mcite{BenComp}.
-%TODO Sauce on dis.
-While we won't explore the implementations for splitting up the data and distributing it we can access the performance of different algorithms on smaller blocks of data to simulate their usage in parallel implementations.
+A common approach for achieving parallelism in compression is by splitting up the data and compressing each the blocks individually on a different core or node\mcite{BenComp}. \\
+While we won't explore the implementations for splitting up the data and distributing it we can access the performance of different algorithms on smaller blocks of data to simulate their usage in parallel implementations. 
 By default our tools test with a block size of 1.7 GB, meaning that the implementation of each algorithm gets 1.7GB of data at a time. 
-Some algorithms may split up this data on their own, like lz4 with it's sliding window. %TODO source for lz4
-To simulate realistic splitting of these files for multiprocessing we decided to go with blocksizes of 500MB, 100MB, 10MB and 1MB.
+Some algorithms may split up this data on their own, meaning a smaller block size might not have any effect. \\%TODO source for lz4
+To simulate realistic splitting of these files for multiprocessing we decided to go with block sizes of 500MB, 100MB, 10MB, 1MB, and 0.1MB.
 
-%TODO put data here
+\begin{figure}[h]
+\begin{center}
+	\scalebox{0.75}{\input{plots/blocksize_1.pgf}}
+\end{center}
+\caption{Compression performance with different block sizes.}
+\label{fig:sc_res}
+\end{figure}
 
-As our data show, the impact of smaller block sizes is limited. Even for %TODO
+\FloatBarrier
+
+This data clearly show that the block sizes do not have a large impact on the performance of compression algorithms. 
+In general a trend of less but faster compression for smaller block sizes can be observed.
+This can be attributed to the fact that the algorithms have a smaller 'backlog' of data to look for possible compression and therefore operate faster.
+Lowering the block size may actually have a positive impact on performance and not affect compression ratio.
+
+For block sizes down to 1MB compression ratio isn't noticeably affected.
+While in general performance goes up with lower block size 500MB seems to be the only out lier.
+We presume that this is due to the added overhead of launching multiple iterations and due to the algorithms splitting up data internally as well, meaning the step from 1.7 GB down to 500MB might not actually affect them.
+
+
+%%Data from 28_03_01_19.db, blocksize
+\begin{tabular}{|l|r|r|}
+\hline
+ Filesystem block size in MB &   Compression Ratio &   Compression speed MByte/s \\
+\hline
+	                    0.10 &                2.68 &                      396.28 \\
+	                    1.00 &                2.84 &                      314.51 \\
+	                   10.00 &                2.86 &                      320.48 \\
+	                  100.00 &                2.86 &                      304.60 \\
+	                  500.00 &                2.86 &                      293.22 \\
+	                 1717.99 &                2.86 &                      299.96 \\
+\hline
+\end{tabular}
+
+The data does however show that even for 0.1MB the impact on compression ratio is minimal (below $10\%$). 
+Therefore in general our algorithms seem to be viable for parallel compression as well.
 
 
 \section{Results}
@@ -331,7 +363,6 @@ For the other extreme of the speed compression ratio trade-off we decided to go 
 \end{table}
 
 
-
 \section{Evaluation}
 In order to evaluate these results a comparison metric is required.
 The resulting data can be interpreted as a set consiting of 2-tuples.
@@ -403,4 +434,3 @@ Wir versichern, dass wir die Arbeit selbstständig verfasst, die Arbeiten am Pro
 \bigskip
 \bigskip
 \end{document}
-
