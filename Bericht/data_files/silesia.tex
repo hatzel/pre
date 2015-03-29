@@ -1,0 +1,31 @@
+%Data from benchmark_26031700.db, filtered with: %silesia%
+\begin{figure}[h]
+\begin{center}
+	\scalebox{0.75}{\input{plots/silesia_1.pgf}}
+\end{center}
+\caption{Silesia Corpus Compression Speed}
+\label{fig:sc_res}
+\end{figure}
+
+
+\begin{table}
+\begin{center}
+\scalebox{0.9}{
+\begin{tabular}{|l|r|r|}
+	\hline
+	Algorithm & Compression Ratio & Compression speed MByte/s \\ \hline
+	7z-deflate & 3.86 & 7.79 \\
+	7z-deflate64 & 4.00 & 7.03 \\
+	\textbf{bzip2} & 5.32 & 8.13 \\
+	\textbf{LZ4} & 2.26 & 346.98 \\
+	lzjb & 1.76 & 172.20 \\
+	lzmat & 3.25 & 27.10 \\
+	\textbf{LZO} & 2.25 & 563.18 \\
+	\textbf{zlib} & 3.69 & 21.29 \\
+	\textbf{ZSTD} & 3.42 & 171.62 \\ \hline
+\end{tabular}
+} 
+\caption{Results, Silesia Corpus}
+\label{tab:sc_res}
+\end{center}
+\end{table}
