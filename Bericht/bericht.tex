@@ -166,15 +166,21 @@ Our multiprocessing model therefore just works by enqueuing all files that are t
 Each of the worker process will benchmark the compression of this file as soon at it is done with the previous task by starting an fsbench instance.
 After each finished instance of the benchmarks, meaning one run of fsbench, the main process will get the results and write them into a sqlite database.
 
-
 We provide a secondary script to help visualize the results. 
-The library pyplot to help with this visualization as it provides a rich interface for displaying diagrams, graphs and the like.
-The visualization script aims to provide some capabilities to filter the data and get a good first impression of the gathered data and was also used to create the diagrams in this document.
+The library matplotlib to help with this visualization as it provides a rich interface for displaying diagrams, graphs and the like.
+The visualization script aims to provide some capabilities to filter the data and get a good first impression of the gathered data and was also used to create the diagrams and tables in this document.
+
 
 Along the way we encountered a few issues, after first implementing the whole thing using pythons thread safe queue we noticed that we needed further abstraction in order to ensure a readable script. We used the python process pool to achieve this.
 
-Fsbench in it's non interactive mode, meaning the csv mode that is used for machine parsable results, also does not supply results such as the compression ratio but instead provides the data to calculate thes yourself. We decided to store data like this in the database since operations such as averaging the compression ratio of many files would otherwise be very slow.
+Fsbench in it's non interactive mode, meaning the csv mode that is used for machine parsable results, also does not supply results such as the compression ratio but instead provides the data to calculate these yourself. We decided to store data with the calculated results the database since operations such as averaging the compression ratio of many files would otherwise be very slow.
 While views would have been an option we decided that some 20-30\% increase in result size would be more bearable than contently having slow querys while analyzing the data.
+
+Since our script supports resuming the benchmark of a whole directory by just running the benchmark again we need to quickly access our database to check if a given file has already been benchmarked (with the same options). Our naive approach of a sqlite database without explicit primary keys and indexes turned out to be too slow for this.
+We had to introduce sqlite indexes to the filename and algorithm columns to make this lookup faster. This made us go from around 7 seconds for one thousand files to around one second for the resuming a twenty thousand entry benchmark. 
+
+Another issue we encountered relatively late was febench report misleading data. If fsbench recognizes a file cannot be compressed (meaning the compression ratio being barely above or equal to 1) it won't actually benchmark decompression but instead report a very large number for decompression speed. We only noticed this since our averages were raising to absurd values.
+We ended up fixing this by just ignoring files with a compression ratio of 1 for decompression speed.
 
 \chapter{Measuring and Processing}
 \label{Measuring and Processing}
