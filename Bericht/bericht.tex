@@ -200,7 +200,7 @@ We used data weather data provided in the grb2 format with inv files for metadat
 
 The fourth source is the CERN\footnote{\url{http://opendata.cern.ch/}} which provides data from the Large Hadron Collider (LHC) in the root format (for their data analysis software).
 ROOT files aim to be very compressed binary files. Therefore little compression is to be expected, but many files in HPC may be precompressed, therefore performance on compressed data could also be a very interesting metric.
-% TODO source here: https://root.cern.ch/drupal/content/root-files-1
+%TODO source here: https://root.cern.ch/drupal/content/root-files-1
 \\
 
 Our final data set is the Silesia compression Corpus\footnote{\url{http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia}}, a standard data set for testing lossless compression algorithms, therefor it contains a mutitude of data and formats. We used this to gain an initial impression of the algorithms and which aspects they excel in. While this dataset aims to be as diverse as possible, some of the datasets are also typical for HPC.
@@ -228,7 +228,7 @@ Testing on the Silesia Compression Corpus leads to the results in figure \ref{fi
 The corresponding values are shown in table \ref{tab:sc_res}. \\
 
 \input{data_files/silesia.tex}
-\quad \\
+
 The graph looks at compression speed and compression ratio. A point to the top tight of another one means that, for the two metrics and our given dataset, the top right algorithms is flat out better. Given this dataset we decided to take a closer look at both lz4 and lzo since these are the algorithms that mostly focus on the speed and sacrifice compression ratio. We will take a look at zstd since it appears to make a uniquely balanced trade-off. \\
 For the other extreme of the speed compression ratio trade-off we decided to go with bzip2. Both 7z-deflate variants are slower than bzip2 on the given dataset therfore we decided to go with zlib as well as an algorithm a little more balanced towards the speed aspect.
 
@@ -238,14 +238,20 @@ For the other extreme of the speed compression ratio trade-off we decided to go 
 
 
 \input{data_files/all.tex}
+%TODO Text something to all
 
 \input{data_files/kcdc.tex}
+%TODO Text something to kcdc
 
 \input{data_files/cern.tex}
+%TODO Text something to cern
 
 \input{data_files/dkrz.tex}
+%TODO Text something to dkrz
 
 \input{data_files/ncdc.tex}
+%TODO Text something to ncdc
+
 \FloatBarrier
 
 
@@ -293,14 +299,10 @@ If we also want to adress decompression we can extend every vector with a third 
 \bibliographystyle{alpha}
 \bibliography{literatur}
 
-%TODO : an ref s denken!
 \listoffigures
 
 \listoftables
 
-\lstlistoflistings
-
-%TODO : was?
 \newpage
 
 \thispagestyle{empty}
