@@ -15,6 +15,10 @@ CONVERSION_RATIOS = {
     "d_speed": 1/1000,
     "block_size": 1/1000000
 }
+COLOR_MAP = {
+    "lz4": "#ff0000",
+    "bzip2": "#0000ff"
+}
 parser = argparse.ArgumentParser(description="""Visualize the results of your
                                  benchmarks from a sqlite database. Currently
                                  only averages of two metrics from multiple
@@ -101,7 +105,10 @@ class Plotter():
                 self.label))
 
     def draw(self):
-        plt.scatter(self.x, self.y, marker='x')
+        def to_color(a):
+            return COLOR_MAP.get(a.lower(), "#000000")
+
+        plt.scatter(self.x, self.y, marker='x', c=list(map(to_color, self.label)))
         for d in zip(self.label, self.x, self.y):
             plt.annotate(d[0], (d[1], d[2]), xytext=(-10, 10),
                          textcoords = 'offset points')
