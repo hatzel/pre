@@ -40,6 +40,9 @@ parser.add_argument("-a", dest="algorithms", action="append", help="""Algorithms
                     given, all available data will be used.""")
 parser.add_argument("--table", help="""Specify a file to which
                     to append the data as a latex tabular.""")
+parser.add_argument("--no-group-by-algorithm", dest="grouping",
+                    action="store_false", help="""Disables gouping of plot points by algorithms.""")
+parser.set_defaults(grouping=True)
 args = parser.parse_args()
 
 
@@ -57,8 +60,16 @@ class Plotter():
             where_clause = where_clause + " AND filename LIKE " + "'" + args.pattern + "'"
         if args.algorithms is not None:
             where_clause = where_clause + " AND codec IN (" + ",".join(list(map(lambda s: '"' + s + '"', args.algorithms))) + ")"
-        q_str_avg = """SELECT {3}, avg({0}), avg({1}) FROM benchmarks
-            {2} GROUP by {3};""".format(x, y, where_clause, label)
+
+        group_clause = ""
+        x_str = x
+        y_str = y
+        if args.grouping:
+            group_clause = "GROUP by " + label
+            x_str = "avg(" + x + ")"
+            y_str = "avg(" + y + ")"
+        q_str_avg = """SELECT {0}, {1}, {2} FROM benchmarks
+            {3} {4};""".format(label, x_str, y_str, where_clause, group_clause)
         conn = sqlite3.connect(args.database)
         c = conn.cursor()
         print(q_str_avg)
@@ -67,6 +78,11 @@ class Plotter():
         self.x = [row[1] for row in self.data]
         self.y = [row[2] for row in self.data]
         self.label = [row[0] for row in self.data]
+
+        print(self.x)
+        print(self.y)
+        print(self.label)
+
         self.convert_units()
 
     def convert_units(self):
