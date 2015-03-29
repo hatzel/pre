@@ -302,8 +302,13 @@ If we also want to adress decompression we can extend every vector with a third 
 	
 \chapter{Discussion}
 \label{Discussion}
+Overall it is clear that some algorithms will be far more usable for live file system compression while others are more viable for long term compression where a high compression ratio is most important.
+There are two general use cases, one being the compression of live file systems and the other being compression for archival.
+For live file systems compression speeds should be on par with disks speeds to ensure the system can run at full speed.
+lz4 and lzo both meet these requirements.
+For archival one has to make the trade off of memory and computing power. Depending on how both factors are valued one might come to the conclusion that bzip is in fact the best algorithm. But other papers have found lz4 to have the better trade off even for long term archival. %TODO Source.
 
-
+%TODO what are read/write speed on clusters
 \chapter{Conclusion}
 \label{Conclusion}
 %TODO write
