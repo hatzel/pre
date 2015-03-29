@@ -1,0 +1,30 @@
+%%Data from 28_03_01_19.db, filtered with: %.nc
+
+\begin{figure}[h]
+\begin{center}
+	\scalebox{0.75}{\input{plots/netcdf_1.pgf}}
+\end{center}
+\caption{DKRZ Data Sets, Compression Speed}
+\label{fig:dkrz_comp}
+\end{figure}
+
+
+\begin{table}
+\begin{center}
+\scalebox{0.9}{
+\begin{tabular}{|l|r|r|}
+\hline
+ Algorithm	      &   Compression Ratio &   Compression speed MByte/s \\
+\hline
+ bzip2            &                1.51 &                        7.03 \\
+ LZ4              &                1.00 &                     1646.33 \\
+ LZO              &                1.00 &                     2993.32 \\
+ zlib             &                1.33 &                        9.87 \\
+ ZSTD             &                1.23 &                      729.95 \\
+\hline
+\end{tabular}
+} 
+\caption{Results, DKRZ Data Sets}
+\label{tab:dkrz_data}
+\end{center}
+\end{table}

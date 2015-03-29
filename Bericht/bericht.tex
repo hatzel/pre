@@ -31,6 +31,8 @@
 \usepackage[subfigure,titles]{tocloft}
 \usepackage{units}
 \usepackage{pgf}
+\usepackage{amsmath}
+\usepackage{placeins}
 
 \lstset{
 	basicstyle=\ttfamily,
@@ -62,7 +64,7 @@
 		\bigskip
 		\bigskip
 
-		{\titlefont\Large --- Art der Arbeit ---\par}
+		{\titlefont\Large --- Projektbericht ---\par}
 
 		\bigskip
 		\bigskip
@@ -89,7 +91,7 @@
 		Betreuer: & Michael Kuhn \\
 			& Konstantinos Chasapis \\
 		\\
-		Hamburg, den 29.03.2015
+		Hamburg, den 30.3.2015
 	\end{tabular}\par}
 \end{titlepage}
 
@@ -164,15 +166,21 @@ Our multiprocessing model therefore just works by enqueuing all files that are t
 Each of the worker process will benchmark the compression of this file as soon at it is done with the previous task by starting an fsbench instance.
 After each finished instance of the benchmarks, meaning one run of fsbench, the main process will get the results and write them into a sqlite database.
 
-
 We provide a secondary script to help visualize the results. 
-The library pyplot to help with this visualization as it provides a rich interface for displaying diagrams, graphs and the like.
-The visualization script aims to provide some capabilities to filter the data and get a good first impression of the gathered data and was also used to create the diagrams in this document.
+The library matplotlib to help with this visualization as it provides a rich interface for displaying diagrams, graphs and the like.
+The visualization script aims to provide some capabilities to filter the data and get a good first impression of the gathered data and was also used to create the diagrams and tables in this document.
+
 
 Along the way we encountered a few issues, after first implementing the whole thing using pythons thread safe queue we noticed that we needed further abstraction in order to ensure a readable script. We used the python process pool to achieve this.
 
-Fsbench in it's non interactive mode, meaning the csv mode that is used for machine parsable results, also does not supply results such as the compression ratio but instead provides the data to calculate thes yourself. We decided to store data like this in the database since operations such as averaging the compression ratio of many files would otherwise be very slow.
+Fsbench in it's non interactive mode, meaning the csv mode that is used for machine parsable results, also does not supply results such as the compression ratio but instead provides the data to calculate these yourself. We decided to store data with the calculated results the database since operations such as averaging the compression ratio of many files would otherwise be very slow.
 While views would have been an option we decided that some 20-30\% increase in result size would be more bearable than contently having slow querys while analyzing the data.
+
+Since our script supports resuming the benchmark of a whole directory by just running the benchmark again we need to quickly access our database to check if a given file has already been benchmarked (with the same options). Our naive approach of a sqlite database without explicit primary keys and indexes turned out to be too slow for this.
+We had to introduce sqlite indexes to the filename and algorithm columns to make this lookup faster. This made us go from around 7 seconds for one thousand files to around one second for the resuming a twenty thousand entry benchmark. 
+
+Another issue we encountered relatively late was febench report misleading data. If fsbench recognizes a file cannot be compressed (meaning the compression ratio being barely above or equal to 1) it won't actually benchmark decompression but instead report a very large number for decompression speed. We only noticed this since our averages were raising to absurd values.
+We ended up fixing this by just ignoring files with a compression ratio of 1 for decompression speed.
 
 \chapter{Measuring and Processing}
 \label{Measuring and Processing}
@@ -188,7 +196,8 @@ Therefore the file is expected to be very compressible.
 The second source provides climatic data and is the Cera database from the DKRZ\footnote{\url{http://cera-www.dkrz.de/CERA/}}. 
 It is stored as in the NetCDF format.
 NetCDF is a binary format for storing array-like data that contains meta data describing the stored data.
-%TODO what about internal compression of netcdf 
+%TODO what about internal compression of netcdf
+\cite{NetCDF}
 %TODO source: https://www.unidata.ucar.edu/software/netcdf/docs/netcdf.html#Introduction
 \\
 
@@ -198,7 +207,7 @@ We used data weather data provided in the grb2 format with inv files for metadat
 
 The fourth source is the CERN\footnote{\url{http://opendata.cern.ch/}} which provides data from the Large Hadron Collider (LHC) in the root format (for their data analysis software).
 ROOT files aim to be very compressed binary files. Therefore little compression is to be expected, but many files in HPC may be precompressed, therefore performance on compressed data could also be a very interesting metric.
-% TODO source here: https://root.cern.ch/drupal/content/root-files-1
+%TODO source here: https://root.cern.ch/drupal/content/root-files-1
 \\
 
 Our final data set is the Silesia compression Corpus\footnote{\url{http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia}}, a standard data set for testing lossless compression algorithms, therefor it contains a mutitude of data and formats. We used this to gain an initial impression of the algorithms and which aspects they excel in. While this dataset aims to be as diverse as possible, some of the datasets are also typical for HPC.
@@ -207,62 +216,88 @@ Our final data set is the Silesia compression Corpus\footnote{\url{http://sun.ae
 \newpage
 \section*{Block sizes}
 Compression algorithms in HPC would ideally work in parallel as otherwise resources of HPC-systems are not used to their full extend.
-A common approach for achieving parallelism in compression is by splitting up the data and compressing each the blocks individually on a different core or node.
-\cite{BenComp}
-%TODO Sauce on dis.
-While we won't explore the implementations for splitting up the data and distributing it we can access the performance of different algorithms on smaller blocks of data to simulate their usage in parallel implementations.
+A common approach for achieving parallelism in compression is by splitting up the data and compressing each the blocks individually on a different core or node\mcite{BenComp}. \\
+While we won't explore the implementations for splitting up the data and distributing it we can access the performance of different algorithms on smaller blocks of data to simulate their usage in parallel implementations. 
 By default our tools test with a block size of 1.7 GB, meaning that the implementation of each algorithm gets 1.7GB of data at a time. 
-Some algorithms may split up this data on their own, like lz4 with it's sliding window. %TODO source for lz4
-To simulate realistic splitting of these files for multiprocessing we decided to go with blocksizes of 500MB, 100MB, 10MB and 1MB.
+Some algorithms may split up this data on their own, meaning a smaller block size might not have any effect. \\%TODO source for lz4
+To simulate realistic splitting of these files for multiprocessing we decided to go with block sizes of 500MB, 100MB, 10MB, 1MB, and 0.1MB.
 
-%TODO put data here
+\input{data_files/blocksizes.tex}
+This data clearly show that the block sizes do not have a large impact on the performance of compression algorithms. 
+In general a trend of less but faster compression for smaller block sizes can be observed.
+This can be attributed to the fact that the algorithms have a smaller 'backlog' of data to look for possible compression and therefore operate faster.
+Lowering the block size may actually have a positive impact on performance and not affect compression ratio.
 
-As our data show, the impact of smaller block sizes is limited. Even for %TODO
+For block sizes down to 1MB compression ratio isn't noticeably affected.
+While in general performance goes up with lower block size 500MB seems to be the only out lier.
+We presume that this is due to the added overhead of launching multiple iterations and due to the algorithms splitting up data internally as well, meaning the step from 1.7 GB down to 500MB might not actually affect them.
+The data does however show that even for 0.1MB the impact on compression ratio is minimal (below $10\%$). 
+Therefore in general our algorithms seem to be viable for parallel compression as well.
 
-
-\section*{Results}
-The first approach is to test algorithms on the Silesia Corpus to filter some inappropriate algorithms. To decide which algorithms will be looked at in more detail.
-e Silesia Compression Corpus lead to the results in figure \ref{fig:sc_res}. 
+\FloatBarrier
+\section{Results}
+The first approach is to test algorithms on the Silesia Corpus to decide which algorithms will be looked at in more detail.
+\\
+Testing on the Silesia Compression Corpus leads to the results in figure \ref{fig:sc_res}. 
 The corresponding values are shown in table \ref{tab:sc_res}. \\
 
-%Data from benchmark_26031700.db, filtered with: %silesia%
-\begin{figure}[h]
-\begin{center}
-	\scalebox{0.75}{\input{plots/silesia_1.pgf}}
-\end{center}
-\caption{SC results plot}
-\label{fig:sc_res}
-\end{figure}
-
-\quad \\
+\input{data_files/silesia.tex}
 
 The graph looks at compression speed and compression ratio. A point to the top tight of another one means that, for the two metrics and our given dataset, the top right algorithms is flat out better. Given this dataset we decided to take a closer look at both lz4 and lzo since these are the algorithms that mostly focus on the speed and sacrifice compression ratio. We will take a look at zstd since it appears to make a uniquely balanced trade-off. \\
 For the other extreme of the speed compression ratio trade-off we decided to go with bzip2. Both 7z-deflate variants are slower than bzip2 on the given dataset therfore we decided to go with zlib as well as an algorithm a little more balanced towards the speed aspect.
-%Data from benchmark_26031700.db, filtered with: %silesia%
-\begin{table}
-\begin{center}
-\scalebox{0.9}{
-\begin{tabular}{|l|r|r|}
-	\hline
-	Algorithm & Compression Ratio & Compression speed MByte/s \\ \hline
-	7z-deflate & 3.86 & 7.79 \\
-	7z-deflate64 & 4.00 & 7.03 \\
-	\textbf{bzip2} & 5.32 & 8.13 \\
-	\textbf{LZ4} & 2.26 & 346.98 \\
-	lzjb & 1.76 & 172.20 \\
-	lzmat & 3.25 & 27.10 \\
-	\textbf{LZO} & 2.25 & 563.18 \\
-	\textbf{zlib} & 3.69 & 21.29 \\
-	\textbf{ZSTD} & 3.42 & 171.62 \\ \hline
-\end{tabular}
-} 
-\caption{SC results table, bold algorithms to be tested further}
-\label{tab:sc_res}
-\end{center}
-\end{table}
+
+
+
+\FloatBarrier
+
+
+\input{data_files/all.tex}
+%TODO Text something to all
+
+\input{data_files/kcdc.tex}
+%TODO Text something to kcdc
+
+\input{data_files/cern.tex}
+%TODO Text something to cern
+
+\input{data_files/dkrz.tex}
+%TODO Text something to dkrz
+
+\input{data_files/ncdc.tex}
+%TODO Text something to ncdc
+
+\FloatBarrier
 
 \section{Evaluation}
-In order to analyse these results we created the metric
+In order to evaluate these results a comparison metric is required.
+The resulting data can be interpreted as a set consiting of 2-tuples.
+To get the values into the same value domain we have to normalize the values.
+The base value for the normalization is the maximal value in its domain.
+This results in:
+\begin{center}
+	\(
+	   v(x) = \frac{v(x)}{max(v(x))}|\forall v \in \text{Results} \land \forall x \in \{ratio, speed\}
+	\)
+\end{center}
+
+Since the Data consists of only positive components we can interprete the tuple as a vector and use the length of the normalized vectors as metric. 
+Positive in this case connotes the greater the value the more efficient the algorithm.
+At last we need to add the ability to weight the results. 
+To achieve this we add a weighting vector whose elements will sum up to one and will be added as factors in the metric. 
+This streches the unit circle to desired relations between compression speed and ratio.
+For the normalized result vector \(V = (\text{compression ratio}, \text{speed})\) and the weighting vector \(W = (\text{compression ratio weighting}, \text{speed weighting})\) this can be expressed as:
+\begin{center}
+	\(
+	\sum\limits^{1}_{i=0} \sqrt{(W(i) \cdot V(i))^2}
+	\)
+\end{center}
+while
+\begin{center}
+	\(
+	\sum\limits^{1}_{i=0}W(i) = 1
+	\)
+\end{center}
+If we also want to adress decompression we can extend every vector with a third value for decompression speed.
 
 	
 \chapter{Discussion}
@@ -277,14 +312,10 @@ In order to analyse these results we created the metric
 \bibliographystyle{alpha}
 \bibliography{literatur}
 
-%TODO : an ref s denken!
 \listoffigures
 
 \listoftables
 
-\lstlistoflistings
-
-%TODO : was?
 \newpage
 
 \thispagestyle{empty}
@@ -298,10 +329,9 @@ Wir versichern, dass wir die Arbeit selbstständig verfasst, die Arbeiten am Pro
 
 \smallskip
 
-\bigskip
-\bigskip
-\bigskip
-
 %Hamburg, den 29.03.2015  \quad \dotfill \\ \\
 
+\bigskip
+\bigskip
+\bigskip
 \end{document}

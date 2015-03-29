@@ -60,6 +60,8 @@ class Plotter():
             where_clause = where_clause + " AND filename LIKE " + "'" + args.pattern + "'"
         if args.algorithms is not None:
             where_clause = where_clause + " AND codec IN (" + ",".join(list(map(lambda s: '"' + s + '"', args.algorithms))) + ")"
+        if self.x_name == "d_speed" or self.y_name == "d_speed":
+            where_clause += " AND ratio > 1.01"
 
         group_clause = ""
         x_str = x
@@ -70,6 +72,7 @@ class Plotter():
             y_str = "avg(" + y + ")"
         q_str_avg = """SELECT {0}, {1}, {2} FROM benchmarks
             {3} {4};""".format(label, x_str, y_str, where_clause, group_clause)
+
         conn = sqlite3.connect(args.database)
         c = conn.cursor()
         print(q_str_avg)

@@ -1,0 +1,29 @@
+%%Data from 28_03_01_19.db, filtered with: %data.txt
+\begin{figure}[h]
+\begin{center}
+	\scalebox{0.75}{\input{plots/kcdc_1.pgf}}
+\end{center}
+\caption{KCDC Data Sets, Compression Speed}
+\label{fig:kcdc_comp}
+\end{figure}
+
+
+\begin{table}
+\begin{center}
+\scalebox{0.9}{
+\begin{tabular}{|l|r|r|}
+\hline
+ Algorithm        &   Compression Ratio &   Compression speed MByte/s \\
+\hline
+ bzip2            &                6.18 &                        9.93 \\
+ LZ4              &                2.56 &                      362.31 \\
+ LZO              &                2.65 &                      417.73 \\
+ zlib             &                4.48 &                       24.19 \\
+ ZSTD             &                4.32 &                      191.35 \\
+\hline
+\end{tabular}
+} 
+\caption{Results, KCDC Data Sets}
+\label{tab:kcdc_data}
+\end{center}
+\end{table}
