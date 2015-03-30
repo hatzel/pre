@@ -1,3 +1,6 @@
+# generic
+*.swp
+
 # LaTex
 *.aux
 *.lof
