@@ -97,9 +97,9 @@
 
 \chapter*{Abstract}
 Compression has always been an important topic in computing but has recently risen in importance as the development of both storage capacity and speed is unable to keep up with the growth in computing power.
-This report aims to compare some of the known compression algorithms in both speed of decompression and compression as well as the compression ratio. We specifically looked at scientific data as it is prevalent in HPC application.
-Overall we saw that, while a lot of scientific data already has compression built into the used file format, a lot of memory can be saved on uncompressed data.
-Depending on whether speed or compression ratio are more important an a specific case different algorithms might be the right choice.
+This report aims to compare some of the popular compression algorithms in both speed of decompression and compression as well as the compression ratio. We specifically look at scientific data as it is prevalent in HPC application.
+Overall we see that, while a lot of scientific data already has compression built into the used file format, a lot of memory can be saved on uncompressed data.
+Depending on whether speed or compression ratio are more important in a specific case, we recommend different compression algorithms.
 \thispagestyle{empty}
 
    
@@ -215,6 +215,15 @@ This does not influence our results in a meaningful way, since we compress the d
 \chapter{Measuring and Processing}
 \label{Measuring and Processing}
 %TODO continue
+
+\section{Benchmark Machines Specifications}
+All benchmarks were run on a machine with the following specifications:
+
+\begin{itemize}
+\item 2 Intel Xeon X5560 mit je \(4 * 2.8\text{GHz}\)
+\item 12GB RAMs
+\end{itemize}
+
 \section{Data Sources}
 The examined data sets come from 5 sources and contain different kinds of information.
 The first source is the KASCADE Cosmic Ray Data Centre (KCDC)\footnote{\url{https://kcdc.ikp.kit.edu/}} of the Karlsruhe Institute of Technology which provides data about cosmic rays. 
