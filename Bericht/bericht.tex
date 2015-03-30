@@ -110,7 +110,7 @@ Depending on whether speed or compression ratio are more important in a specific
 
 Since and even before the start of the days of modern computers compression is of a certain importance.
 
-Before computers as we know them today became ubiqitous, compression could be found (among others) in commercial codes for telegraphing\cite{com}, or even in the still-in-use morse code.
+Before computers as we know them today became ubiquitous, compression could be found (among others) in commercial codes for telegraphing\cite{com}, or even in the still-in-use Morse code.
 
 The main reason to use a form of compression in these systems was to reduce the time it took to send a certain message. This reason carries on into the modern age in the form of compressed network communications; many other applications for compression have been discovered since then.
 
@@ -124,7 +124,7 @@ In the case of the DKRZ, projections see storage capacity increase only by a fac
 
 Compression can not solve this problem, but it can help to mitigate the impact of the disproportionate growth of computing speed vs. storage speed, and thus reduce the significance of the gap. 
 
-However, compression is a big field. There are many algorithms to achieve compression, each with it's own set of performance characteristics. To apply compression in a beneficial manner, one has to carefully choose an appropriate algorithm, or even multiple algorithms, for the use case at hand.
+However, compression is a large field. There are many algorithms to achieve compression, each with it's own set of performance characteristics. To apply compression in a beneficial manner, one has to carefully choose an appropriate algorithm, or even multiple algorithms, for the use case at hand.
 
 This leads us to the main purpose of this project: To find, through testing possible candidates in simulations of typical situations in HPC, the best algorithms to be used in high-speed computing and storage systems.
 
@@ -137,7 +137,7 @@ The main assignment for this project is the performance analysis for different c
 
 \begin{enumerate}
 \item Identify common scenarios in which compression can be applied in HPC
-\item Simulate these scenarios using a set of compression algorithms, measuring the performance of each algorithm in compression/decompression speed and compression ratio
+\item Simulate these scenarios using a set of compression algorithms, measuring the performance of each algorithm in compression / decompression speed and compression ratio
 \item Analyze the resulting performance data to find an optimal algorithm for each scenario
 \end{enumerate}
 
@@ -147,7 +147,7 @@ We also need to find or build appropriate tools to simulate, measure and analyze
 \section*{Methodology}
 We approached this by building a tool that tests multiple compression algorithms with a set of files and writes the test results into a database for later analysis.
 
-To simulate scenarios similar to those in HPC, we aquired a set of test data files from various sources:
+To simulate scenarios similar to those in HPC, we acquired a set of test data files from various sources:
 \begin{itemize}
 \item CERN Open Data (Conseil Européen pour la Recherche Nucléaire)
 \item DKRZ (Deutsches Klima Rechenzentrum)
@@ -157,7 +157,7 @@ To simulate scenarios similar to those in HPC, we aquired a set of test data fil
 
 We also included a data set commonly used for testing and benchmarking compression algorithms, called Silesia Compression Corpus.
 
-After selecting and getting suitable data sets and testing algorithms on them with our script we needed to analyse the results. To do so we created a metric which can be weighted, so we could change the way an algorithms results are rated depending on the scenario.
+After selecting and getting suitable data sets and testing algorithms on them with our script we needed to analyze the results. To do so we created a metric which can be weighted, so we could change the way an algorithms results are rated depending on the scenario.
 
 We then applied the metric using two different scenarios and found recommended algorithms for each one.
 
@@ -173,7 +173,7 @@ We planned to implement a script that would compress and decompress sets of data
 
 To do this, our script utilizes fsbench. Fsbench is a free open source tool implemented in C++ that is able to test a set of compression algorithms against a file. It is, however, not capable of batch processing multiple files.
 
-This is where our script comes in. We provide a simple-to-use interface to test entire directory structures and store the resulting data in an easily processable format. We decided to go with sqlite as a data store since it combines the simplicity of having just one database file with the performance and usage benefits taht are typical for relational databases.
+This is where our script comes in. We provide a simple-to-use interface to test entire directory structures and store the resulting data in an easily processable format. We decided to go with sqlite as a data store since it combines the simplicity of having just one database file with the performance and usage benefits that are typical for relational databases.
 
 Our script aims to speed up the benchmarking process by launching multiple instances of fsbench on the different processing cores available in the system.
 For this we decided to use the python process pool implementation as it provides a simple way to split up the workload.
@@ -182,9 +182,9 @@ Each of the worker process will benchmark the compression of this file as soon a
 
 Each fsbench instance is provided the file and the list of compression algorithms to test (given as command line arguments to our script). The instance is also instructed to output test run results in the machine-readable csv format.
 
-After each finished instance of the benchmarks, meaning one run of fsbench, the main process will retreive the results and write them into a sqlite database.
+After each finished instance of the benchmarks, meaning one run of fsbench, the main process will retrieve the results and write them into a sqlite database.
 
-Additionaly, we provide a second script to help visualize and format the results. 
+Additionally, we provide a second script to help visualize and format the results. 
 This uses the library matplotlib that provides a rich interface for displaying diagrams, graphs and the like.
 
 We also implemented a function to generate \LaTeX tables to get the results into this report in an automated fashion.
@@ -195,7 +195,7 @@ The visualization script aims to provide some capabilities to filter the data an
 
 Along the way we faced a few issues: After the first iteration which implemented the multiprocessing aspect using pythons thread safe queues we noticed that the script quickly became confusing to read. Using python's process pool, we introduced another level of abstraction in order to ensure a readable script.
 
-We run fsbench in it's non interactive mode. This comes with the limitation that fsbench does not output calculated results such as the compression ratio but instead provides the raw data to calculate these yourself. We decided to compute those calculated results (mainly compression ratio and comression-/decompression-speed) in the database. This takes some calculation time when storing the data, but makes operations such as averaging the compression ratio of many files faster and simpler. We chose this trade-off since we expected to query data multiple times with different querys after having run a benchmark once.
+We run fsbench in it's non interactive mode. This comes with the limitation that fsbench does not output calculated results such as the compression ratio but instead provides the raw data to calculate these yourself. We decided to compute those calculated results (mainly compression ratio and compression-/decompression-speed) in the database. This takes some calculation time when storing the data, but makes operations such as averaging the compression ratio of many files faster and simpler. We chose this trade-off since we expected to query data multiple times with different queries after having run a benchmark once.
 
 While views would have been an option we decided that a 20-30\% increase in database size would be a smaller burden than contently waiting for slow querys while analyzing the data.
 
@@ -512,13 +512,15 @@ This is by no means an impossible task as our results were measured on an older 
 \chapter{Conclusion}
 \label{Conclusion}
 Many of the data types in HPC use compressions themselves.
-This means to evaluate the usefullness of compression algorithms in the HPC field requires knowledge about the composition of the data.
+This means to evaluate the usefulness of compression algorithms in the HPC field requires knowledge about the composition of the data.
 Therefore the composition has to be analyzed and the used algorithms need the ability to detect already compressed files and handle this issue.
 \\
-Bzip2 and zlib lack this ability and therefore can only be considered appropriate if time is a very unimportant component of the system where we want to compress.
+Bzip2 and zlib lack this ability and therefore can only be considered appropriate if time is a very unimportant factor in the assessment of a given system.
 \\
-If time is a valuable ressource you can derive from the results in table \ref{tab:metric} that lzo and lz4 are appropriate for the compression task. 
-But if decompression speed is also considered, lz4 is the recommended algorithm.
+If time is a valuable resource you can derive from the results in table \ref{tab:metric} that lzo and lz4 are appropriate for the compression task. 
+But if decompression speed is also considered, lz4 is the recommended algorithm. 
+In most cases data will be decompressed more often than it will be compressed making decompression speed the more important factor.
+It is however possible to envision a system where decompression speed is not essential for example an archival system where most files are not expected to be read again.
 
 
 \nocite{*}
