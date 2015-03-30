@@ -351,6 +351,7 @@ There are five interesting use cases:
 	So we need to minimize the used storage, we can achieve this with high compression ratios.
 \end{itemize}
 \input{data_files/metric.tex}
+
 \FloatBarrier
 	
 \chapter{Discussion}
@@ -386,10 +387,12 @@ This is by no means an impossible task as our results were measured on an older 
 \label{Conclusion}
 Many of the data types in HPC use compressions themselves.
 This means to evaluate the usefullness of compression algorithms in the HPC field requires knowledge about the composition of the data.
-Therefore the composition has to be analyzed.
+Therefore the composition has to be analyzed and the used algorithms need the ability to detect already compressed files and handle this issue.
 \\
-
-
+Bzip2 and zlib lack this ability and therefore can only be considered appropriate if time is a very unimportant component of the system where we want to compress.
+\\
+If time is a valuable ressource you can derive from the results in table \ref{tab:metric} that lzo and lz4 are appropriate for the compression task. 
+But if decompression speed is also considered, lz4 is the recommended algorithm.
 
 
 \nocite{*}
