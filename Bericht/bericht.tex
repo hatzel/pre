@@ -52,8 +52,6 @@
 \renewcommand*{\appendixtocname}{Appendices}
 \renewcommand*{\appendixpagename}{Appendices}
 
-\newcommand*{\mcite}[1]{\footnote{\cite{#1}}}
-
 
 \begin{document}
 
@@ -112,17 +110,17 @@ Depending on whether speed or compression ratio are more important in a specific
 
 Since and even before the start of the days of modern computers compression is of a certain importance.
 
-Before computers as we know them today became ubiqitous, compression could be found (among others) in commercial codes for telegraphing\mcite{com}, or even in the still-in-use morse code.
+Before computers as we know them today became ubiqitous, compression could be found (among others) in commercial codes for telegraphing\cite{com}, or even in the still-in-use morse code.
 
 The main reason to use a form of compression in these systems was to reduce the time it took to send a certain message. This reason carries on into the modern age in the form of compressed network communications; many other applications for compression have been discovered since then.
 
 Among others, fast compression algorithms are used to transparently reduce the load and amount of data in live, in-use file systems. Slower algorithms might be utilized for significant reduction in data size, and thus disk usage, in long-term storage systems.
 
 With modern computers in general, and especially in High Performance Computing (HPC) we see an emerging gap between the speed at which data can be computed and the speed at which it can be stored it in an appropriate way. 
-This gap stems from the growing difference between computing speed and storage capacity\mcite{ExaStoSy}.
+This gap stems from the growing difference between computing speed and storage capacity\cite{ExaStoSy}.
 
 The effect can be observed when looking at new generations of supercomputers: 
-In the case of the DKRZ, projections see storage capacity increase only by a factor of three while computing performance is expected to grow by a factor of twenty\mcite{ExaStoSy}.
+In the case of the DKRZ, projections see storage capacity increase only by a factor of three while computing performance is expected to grow by a factor of twenty\cite{ExaStoSy}.
 
 Compression can not solve this problem, but it can help to mitigate the impact of the disproportionate growth of computing speed vs. storage speed, and thus reduce the significance of the gap. 
 
@@ -236,7 +234,7 @@ The second source provides climatic data and is the Cera database from the DKRZ\
 It is stored as in the NetCDF format.
 NetCDF is a binary format for storing array-like data that contains meta data describing the stored data.
 %TODO what about internal compression of netcdf
-\mcite{NetCDF}
+\cite{NetCDF}
 \\
 
 The third set of data sets is provided by the National Climatic Data Center (NCDC) and their global forecast system\footnote{\url{http://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs}}. 
@@ -254,7 +252,7 @@ Our final data set is the Silesia compression Corpus\footnote{\url{http://sun.ae
 \newpage
 \section*{Block sizes}
 Compression algorithms in HPC would ideally work in parallel as otherwise resources of HPC-systems are not used to their full extend.
-A common approach for achieving parallelism in compression is by splitting up the data and compressing each the blocks individually on a different core or node\mcite{BenComp}. \\
+A common approach for achieving parallelism in compression is by splitting up the data and compressing each the blocks individually on a different core or node\cite{BenComp}. \\
 While we won't explore the implementations for splitting up the data and distributing it we can access the performance of different algorithms on smaller blocks of data to simulate their usage in parallel implementations. 
 By default our tools test with a block size of 1.7 GB, meaning that the implementation of each algorithm gets 1.7GB of data at a time. 
 Some algorithms may split up this data on their own, meaning a smaller block size might not have any effect. \\%TODO source for lz4
@@ -263,7 +261,7 @@ To simulate realistic splitting of these files for multiprocessing we decided to
 \input{data_files/blocksizes.tex}
 This data clearly show that the block sizes do not have a large impact on the performance of compression algorithms. 
 In general a trend of less but faster compression for smaller block sizes can be observed.
-This can be attributed to the fact that the algorithms have a smaller 'backlog' of data to look for possible compression and therefore operate faster. \mcite{ResComp}
+This can be attributed to the fact that the algorithms have a smaller 'backlog' of data to look for possible compression and therefore operate faster\cite{ResComp}. 
 Lowering the block size may actually have a positive impact on performance and not affect compression ratio.
 
 For block sizes down to 1MB compression ratio isn't noticeably affected.
@@ -280,49 +278,107 @@ The first approach is to test algorithms on the Silesia Corpus to decide which a
 Testing on the Silesia Compression Corpus leads to the results in figure \ref{fig:sc_res}. 
 The corresponding values are shown in table \ref{tab:sc_res}. \\
 
+
+
+% silesia
+
+
 \input{data_files/silesia.tex}
 The graph looks at compression speed and compression ratio. A point to the top tight of another one means that, for the two metrics and our given dataset, the top right algorithms is flat out better. Given this dataset we decided to take a closer look at both lz4 and lzo since these are the algorithms that mostly focus on the speed and sacrifice compression ratio. We will take a look at zstd since it appears to make a uniquely balanced trade-off. \\
 For the other extreme of the speed compression ratio trade-off we decided to go with bzip2. Both 7z-deflate variants are slower than bzip2 on the given dataset therefore we decided to go with zlib as well as an algorithm a little more balanced towards the speed aspect.
 
+
+
+
+
+
+% all samples
+
+
 \input{data_files/compression-colors.tex}
 \input{data_files/compression-colors-log.tex}
-Figure \ref{fig:much_color} shows all of our samples. The most interesting part is the very high compression speed for files with a compression ratio of around $1.0$. This can be attributed to some of the algorithms recognizing that they operate on pre-compressed data, like the .root file from CERN Open-data.
+%\FloatBarrier
+Figure \ref{fig:much_color} and \ref{fig:much_color_log} show all of our samples. The most interesting part is the very high compression speed for files with a compression ratio of around $1.0$. This can be attributed to some of the algorithms recognizing that they operate on pre-compressed data, like the .root file from CERN Open-data.
 
 The graph also gives a relativity simple overview of where most of the samples fall for each algorithm.
 Another intresting aspect is the fact that each of the algorithms roughly describes a linear function with their different samples (excluding the points at compression ratio $1.0$ with high compression speeds).
 This means that we generally have a linear relationship between compression ratio and compression speed.
 \FloatBarrier
 
-\input{data_files/ncdc.tex}
-%TODO Text something to ncdc
 
-This data set, while yielding no surprises in algorithm performance, shows the impact compression can actually have. With a compression ratio of 2.5 the size of a file is cut in less then half.
+
+
+
+% kcdc
+
+
+%TODO Text something to ncdc
+\input{data_files/kcdc.tex}
+This data (Figure \ref{fig:kcdc_comp}) set, while yielding no surprises in algorithm performance, shows the impact compression can actually have. With a compression ratio of 2.5 the size of a file is cut in less then half.
 The data representation was however also very poorly designed as it stores mostly numbers in represented as characters.
 The possible compression ratio would be a lot lower if the data was actually stored as a binary float or integer representation.
-\input{data_files/kcdc.tex}
 
-%TODO Text something to kcdc
 
-The .root file format is already compressed an therefore none of our algorithms can achieve any meaningful compression. More interesting is the fact that some of the algorithms are able to finish very quickly with a compression ratio of 1.0. 
-Meaning that these algorithms have built in detections for when a file won't compress well and can react accordingly.  
-\input{data_files/cern.tex}
 
-The netCDF data is an interesting dataset since while lz4 and lzo seem to recognize it as incompressible other algorithms still achieve decent results.
-The data format supports compression without any user interaction such as explicitly decompressing the file. It appears as though this instance of a netCDF file is compressed, as we can see in figure \ref{fig:nc_uncompressed} not all netCDF files are compressed.
-\input{data_files/dkrz.tex}
-For netCDF files that do not have internal compression we can again achieve great compression ratios with all algorithms and get the usual split into slower and faster algorithms.
 
-\input{data_files/netcdf-uncompressed.tex}
 
-\input{data_files/ncdc.tex}
-We expected the compression algorithms to at least give us some compression.
-However the compression ratio even for the slower algorithms is barely above $1.0$
-The GRIB2 files appear to also be compressed. GRIB2 does support, file format specific, compression \mcite{GRIMP}.
+% ncdc
+
 
 \FloatBarrier
-Joined all this results lead to the Figure \ref{fig:all_comp} with values in Table \ref{tab:all_comp}.
-Furthermore you can look at the joinde decompression results in Figure \ref{fig:all_decomp} with their values in Table \ref{tab:all_dec}.
+\input{data_files/ncdc.tex}
+%TODO Text something to kcdc
+We expected the compression algorithms to at least give us some compression.
+However the compression ratio even for the slower algorithms is barely above $1.0$
+The GRIB2 files appear to also be compressed. GRIB2 does support file format specific compression\textsuperscript{\cite{GRIMP}}.
+
+
+
+
+
+% cern
+
+
+\FloatBarrier 
+\input{data_files/cern.tex}
+
+The .root file format is already compressed an therefore none of our algorithms can achieve any meaningful compression. More interesting is the fact that some of the algorithms are able to finish very quickly with a compression ratio of 1.0. 
+Meaning that these algorithms have built in detections for when a file won't compress well and can react accordingly.
+\FloatBarrier
+
+
+
+
+% dkrz
+
+
+\FloatBarrier
+\input{data_files/dkrz.tex}
+The netCDF data is an interesting dataset since while lz4 and lzo seem to recognize it as incompressible other algorithms still achieve decent results.
+The data format supports compression without any user interaction such as explicitly decompressing the file. It appears as though this instance of a netCDF file is compressed, as we can see in figure \ref{fig:nc_uncompressed} not all netCDF files are compressed.
+
+
+
+
+
+% netcdf-uncompressed
+
+
+\FloatBarrier
+\input{data_files/netcdf-uncompressed.tex}
+For netCDF files that do not have internal compression we can again achieve great compression ratios with all algorithms and get the usual split into slower and faster algorithms.
+
+
+
+
+
+% all data
+
+
+\FloatBarrier
 \input{data_files/all.tex}
+Joined all this results lead to the Figure \ref{fig:all_comp} with values in Table \ref{tab:all_comp}.
+Furthermore you can look at the joined decompression results in Figure \ref{fig:all_decomp} with their values in Table \ref{tab:all_dec}.
 \FloatBarrier
 
 \section{Scenarios}
@@ -411,7 +467,7 @@ lz4 and lzo both meet these requirements.
 For archival one has to make the trade off of memory and computing power. 
 Depending on how both factors are valued one might come to the conclusion that bzip is in fact the best algorithm. 
 This supports the findings so far.
-On the other hand other papers have found lz4 to have the better trade off even for long term archival\mcite{PPerfHPC}.
+On the other hand other papers have found lz4 to have the better trade off even for long term archival\cite{PPerfHPC}.
 \\
 One arising questions is if our metric is a suitable one, since it does not value the trade-off zstd makes with neutral input in column 3.
 But zstd is not outstanding in its measurements.
@@ -462,7 +518,7 @@ But if decompression speed is also considered, lz4 is the recommended algorithm.
 
 
 \nocite{*}
-\bibliographystyle{alpha}
+\bibliographystyle{plain}
 \bibliography{literatur}
 
 \listoffigures
