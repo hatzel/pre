@@ -394,7 +394,7 @@ Overall it is clear that some algorithms will be far more usable for live file s
 There are two general use cases, one being the compression of live file systems and the other being compression for archival.
 For live file systems compression speeds should be on par with disks speeds to ensure the system can run at full speed.
 lz4 and lzo both meet these requirements.
-For archival one has to make the trade off of memory and computing power. Depending on how both factors are valued one might come to the conclusion that bzip is in fact the best algorithm. But other papers have found lz4 to have the better trade off even for long term archival. %TODO Source.
+For archival one has to make the trade off of memory and computing power. Depending on how both factors are valued one might come to the conclusion that bzip is in fact the best algorithm. Other papers have found lz4 to have a good trade off even for long term archival. \cite{PPerfHPC}
 
 \begin{table}
 \begin{center}
