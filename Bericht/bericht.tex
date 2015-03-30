@@ -308,6 +308,25 @@ For live file systems compression speeds should be on par with disks speeds to e
 lz4 and lzo both meet these requirements.
 For archival one has to make the trade off of memory and computing power. Depending on how both factors are valued one might come to the conclusion that bzip is in fact the best algorithm. But other papers have found lz4 to have the better trade off even for long term archival. %TODO Source.
 
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|r|}
+    \hline
+    Storage Throughput & 400GB/s \\
+    \hline
+    Archive Throughput &  21GB/s \\
+    \hline
+\end{tabular}
+\caption{Storage speeds as estimated for a new Cluster in 2015 \cite{ExaStoSy}}
+\label{tab:storage_speeds}
+\end{center}
+\end{table}
+
+Compression should ideally not impact the performance of the system. 
+For read write operations this is mostly the case if compression speeds keep up with storage speeds.
+Our results find lz4 to have an average compression speed of 514MB/s meaning that to keep up with a storage speed of modern clusters, see table \ref{tab:storage_speeds}, one would need 800 of our machines cores. 
+
+This is by no means an impossible task as our results were measured on an older machine and a cluster has a lot of nodes at its disposal. But it means that in order to achieve a the same with bzip2 one would need around $50000$ of our cores.
 %TODO what are read/write speed on clusters
 \chapter{Conclusion}
 \label{Conclusion}
