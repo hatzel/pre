@@ -258,15 +258,25 @@ This means that we generally have a linear relationship between compression rati
 \input{data_files/all.tex}
 %TODO Text something to all
 
+This data set, while yielding no surprises in algorithm performance, shows the impact compression can actually have. With a compression ratio of 2.5 the size of a file is cut in less then half.
+The data representation was however also very poorly designed as it stores mostly numbers in represented as characters.
+The possible compression ratio would be a lot lower if the data was actually stored as a binary float or integer representation.
 \input{data_files/kcdc.tex}
+\FloatBarrier
 %TODO Text something to kcdc
 
+The .root file format is already compressed an therefore none of our algorithms can achieve any meaningful compression. More interesting is the fact that some of the algorithms are able to finish very quickly with a compression ratio of 1.0. 
+Meaning that these algorithms have built in detections for when a file won't compress well and can react accordingly.  
 \input{data_files/cern.tex}
-%TODO Text something to cern
+\FloatBarrier
 
+The netCDF data is an interesting dataset since while lz4 and lzo seem to recognize it as incompressible other algorithms still achieve decent results.
+The data format supports compression without any user interaction such as explicitly decompressing the file. It appears as though this instance of a netCDF file is compressed, as we can see in figure \ref{fig:nc_uncompressed} not all netCDF files are compressed.
 \input{data_files/dkrz.tex}
+If the file does not have internal compression we can again achieve great compression ratios with all algorithms an get the usual split into slower and faster algorithms.
+\input{data_files/netcdf-uncompressed.tex}
 %TODO Text something to dkrz
-
+\FloatBarrier
 \input{data_files/ncdc.tex}
 %TODO Text something to ncdc
 
