@@ -8,6 +8,7 @@
 \usepackage{tikz}
 \usepackage{graphicx}
 \usepackage{subfig}
+\usepackage{textcomp}
 
 \title{Evaluating Compression}
 \date{\today}
@@ -129,7 +130,7 @@
     \end{figure}
 \end{frame}
 
-\begin{frame}{All algorithms}
+\begin{frame}{Compression performance}
     \begin{figure}[h]
         \begin{center}
             \scalebox{0.5}{\input{plots/all_1.pgf}}
@@ -138,13 +139,38 @@
 \end{frame}
 
 
-\begin{frame}{All algorithms}
+\begin{frame}{Decompression performance}
     \begin{figure}[h]
         \begin{center}
             \scalebox{0.5}{\input{plots/decompression_1.pgf}}
         \end{center}
     \end{figure}
 \end{frame}
+
+\begin{frame}{Datasets}
+    \begin{itemize}
+        \item KCDC - txt (very compressable)
+        \item CERN - root (precompressed)
+        \item Cera - NetCDF (in part already compressed)
+        \item NCDC - GRIB2 (precompressed)
+        \item \textrightarrow many scientific data formats come with built in compression
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Blocksize}
+    \begin{itemize}
+        \item useful information for parallelizing
+        \item we had a look at different block sizes 
+        \item very little influence
+    \end{itemize}
+    \vspace{-0.9em}
+    \begin{figure}[h]
+        \begin{center}
+            \scalebox{0.42}{\input{plots/blocksize_1.pgf}}
+        \end{center}
+    \end{figure}
+\end{frame}
+
 
 \section{Summary}
 \begin{frame}{Penguines}
