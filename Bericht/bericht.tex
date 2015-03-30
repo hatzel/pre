@@ -317,11 +317,16 @@ For archival one has to make the trade off of memory and computing power. Depend
     Archive Throughput &  21GB/s \\
     \hline
 \end{tabular}
-\caption{Disk speeds as estimated for a new 2015 System \cite{ExaStoSy}}
-\label{tab:all_comp}
+\caption{Storage speeds as estimated for a new Cluster in 2015 \cite{ExaStoSy}}
+\label{tab:storage_speeds}
 \end{center}
 \end{table}
 
+Compression should ideally not impact the performance of the system. 
+For read write operations this is mostly the case if compression speeds keep up with storage speeds.
+Our results find lz4 to have an average compression speed of 514MB/s meaning that to keep up with a storage speed of modern clusters, see table \ref{tab:storage_speeds}, one would need 800 of our machines cores. 
+
+This is by no means an impossible task as our results were measured on an older machine and a cluster has a lot of nodes at its disposal. But it means that in order to achieve a the same with bzip2 one would need around $50000$ of our cores.
 %TODO what are read/write speed on clusters
 \chapter{Conclusion}
 \label{Conclusion}
