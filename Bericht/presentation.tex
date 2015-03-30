@@ -21,7 +21,6 @@
 
 
 \begin{frame}{Assignment}
-    \input{data_files/compression-colors.tex}
     \begin{itemize}
         \item Benchmark different algorithms
         \item on different sets of scientific data
@@ -61,35 +60,71 @@
     \end{itemize}    
 \end{frame}
 
-\begin{frame}{Pretty graphs}
-    \begin{figure}[h]
-        \begin{center}
-            \scalebox{0.1}{\input{plots/all_scatter.pgf}}
-        \end{center}
-        \caption{All of our benchmarks colored by algorithm}
-        \label{fig:much_color}
-    \end{figure}
-\end{frame}
-
-\begin{frame}{Objectives}
-	%TODO Ziele
-\end{frame}
-
 \section{Procedure}
 \begin{frame}{Plan}
-	%TODO Projektplan, kp why nötig vllt in der art: was wurde getan
+    \begin{itemize}
+        \item choose datasets
+        \item write script
+        \item execute script
+        \item have beautiful data
+        \item decide on algorithms
+        \item create more pretty data
+    \end{itemize}
 \end{frame}
 
 \begin{frame}{Problems}
-	\begin{itemize}
+    \begin{itemize}  
         \item implementation details
-        \item no obvious way to assess the multiple metrics of compression
         \item python 2 vs 3.2 vs 3.4
         \item fsbench memory usage
+        \item github
+        \item no obvious way to assess the multiple metrics of compression
+        \item Files turn out to have internal compression
     \end{itemize}
 \end{frame}
 
 \begin{frame}{Solutions}
+    \begin{itemize}
+        \item Solve implementation related issues on the way
+        \item Come up with our own metric
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Metric}
+    \begin{center}
+        \(
+        \sum\limits^{1}_{i=0} \sqrt{(W(i) \cdot V(i))^2}
+        \)
+    \end{center}
+    \begin{table}
+    \begin{center}
+    \scalebox{1}{
+    \begin{tabular}{|l|r|r|r|r|r|}
+    \hline
+     Algorithm        &   0.2:0.4:0.4 & 0.2:0.2:0.6 & \(\frac{1}{3}:\frac{1}{3}:\frac{1}{3}\) & 0.2:0.6:0.2 & 0.6:0.2:0.2 \\
+    \hline
+     bzip2            &  0.2008 & 0.2003 & 0.3401 & 0.2001 & \textbf{0.6} \\
+     LZ4              &  \textbf{0.4806} & \textbf{0.6202} & \textbf{0.4213} & 0.4338 & 0.3718 \\
+     LZO              &  0.4516 & 0.3569 & 0.3992 & \textbf{0.6148} & 0.3637 \\
+     zlib             &  0.1673 & 0.1881 & 0.26   & 0.1538 & 0.4463 \\
+     ZSTD             &  0.2547 & 0.309  & 0.2938 & 0.239  & 0.428 \\
+    \hline
+    \end{tabular}
+    } 
+    \caption{Metric, Ratio : Compression speed : Decompression Speed}
+    \label{tab:metric}
+    \end{center}
+    \end{table}
+
+\end{frame}
+
+\section{Data}
+\begin{frame}{Pretty graphs}
+    \begin{figure}[h]
+        \begin{center}
+            \scalebox{0.5}{\input{plots/all_scatter.pgf}}
+        \end{center}
+    \end{figure}
 \end{frame}
 
 \section{Summary}
