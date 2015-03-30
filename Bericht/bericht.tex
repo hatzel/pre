@@ -145,13 +145,21 @@ We also need to find or build appropriate tools to simulate, measure and analyze
 
 
 \section*{Methodology}
-We approached this through writing a script around a tool for testing multiple compression algorithms so we could use it for multiple files and store the results in a database. 
-\\
-Multiple files were necessary to get an appropriate amount of measurements.
-For this purpose different datasets from scientific sources were required.
-\\
-After selecting and getting suitable data sets and testing algorithms on them with our script we needed to analyse the different outputs.
-To do so we created a metric which can be weighted, so it is possible to map the results to our use cases in an appropriate way. \\
+We approached this by building a tool that tests multiple compression algorithms with a set of files and writes the test results into a database for later analysis.
+
+To simulate scenarios similar to those in HPC, we aquired a set of test data files from various sources:
+\begin{itemize}
+\item CERN Open Data
+\item DKRZ
+\item NCDC (the US National Climatic Data Center)
+\item KIT (Karlsruhe Institute of Technology)
+\end{itemize}
+
+We also included a data set commonly used for testing and benchmarking compression algorithms, called Silesia Compression Corpus.
+
+After selecting and getting suitable data sets and testing algorithms on them with our script we needed to analyse the results. To do so we created a metric which can be weighted, so we could change the way an algorithms results are rated depending on the scenario.
+
+We then applied the metric using two different scenarios and found recommended algorithms for each one.
 
 \chapter{Design and Implementation}
 \label{Design}
@@ -247,6 +255,7 @@ The graph looks at compression speed and compression ratio. A point to the top t
 For the other extreme of the speed compression ratio trade-off we decided to go with bzip2. Both 7z-deflate variants are slower than bzip2 on the given dataset therefore we decided to go with zlib as well as an algorithm a little more balanced towards the speed aspect.
 
 \input{data_files/compression-colors.tex}
+\input{data_files/compression-colors-log.tex}
 Figure \ref{fig:much_color} shows all of our samples. The most interesting part is the very high compression speed for files with a compression ratio of around $1.0$. This can be attributed to some of the algorithms recognizing that they operate on pre-compressed data, like the .root file from CERN Open-data.
 
 The graph also gives a relativity simple overview of where most of the samples fall for each algorithm.
