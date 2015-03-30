@@ -96,8 +96,10 @@
 \end{titlepage}
 
 \chapter*{Abstract}
-%TODO write
-
+Compression has always been an important topic in computing but has recently risen in importance as the development of both storage capacity and speed is unable to keep up with the growth in computing power.
+This report aims to compare some of the known compression algorithms in both speed of decompression and compression as well as the compression ratio. We specifically looked at scientific data as it is prevalent in HPC application.
+Overall we saw that, while a lot of scientific data already has compression built into the used file format, a lot of memory can be saved on uncompressed data.
+Depending on whether speed or compression ratio are more important an a specific case different algorithms might be the right choice.
 \thispagestyle{empty}
 
    
@@ -291,11 +293,9 @@ We expected the compression algorithms to at least give us some compression.
 However the compression ratio even for the slower algorithms is barely above $1.0$
 The GRIB2 files appear to also be compressed. GRIB2 does support, file format specific, compression \cite{GRIMP}.
 
+
+All these results are summed up in Figure \ref{fig:all_comp} (values in Table \ref{tab:all_comp})
 \input{data_files/all.tex}
-This summarizes to the Figure \ref{fig:all_comp} (values in Table \ref{tab:all_comp})
-
-
-
 \FloatBarrier
 
 \section{Scenarios}
