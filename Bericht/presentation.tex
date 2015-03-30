@@ -8,6 +8,7 @@
 \usepackage{tikz}
 \usepackage{graphicx}
 \usepackage{subcaption}
+\usepackage{textcomp}
 
 \title{Evaluating Compression}
 \date{\today}
@@ -29,6 +30,18 @@
         \item automate benchmarking of whole directory structures
         \item visualize results
         \item assess which algorithms are the best
+    \end{itemize}
+\end{frame}
+
+\section{Procedure}
+\begin{frame}{Plan}
+    \begin{itemize}
+        \item choose datasets
+        \item write script
+        \item execute script
+        \item have beautiful data
+        \item decide on algorithms
+        \item create more pretty data
     \end{itemize}
 \end{frame}
 \begin{frame}{What is fsbench?}
@@ -62,24 +75,12 @@
     \end{itemize}    
 \end{frame}
 
-\section{Procedure}
-\begin{frame}{Plan}
-    \begin{itemize}
-        \item choose datasets
-        \item write script
-        \item execute script
-        \item have beautiful data
-        \item decide on algorithms
-        \item create more pretty data
-    \end{itemize}
-\end{frame}
-
 \begin{frame}{Problems}
     \begin{itemize}  
         \item implementation details
         \item python 2 vs 3.2 vs 3.4
         \item fsbench memory usage
-        \item github
+        \item ddoser
         \item no obvious way to assess the multiple metrics of compression
         \item Files turn out to have internal compression
     \end{itemize}
@@ -121,14 +122,56 @@
 \end{frame}
 
 \section{Data}
-\begin{frame}{Pretty graphs}
+\begin{frame}{All algorithms}
     \begin{figure}[h]
         \begin{center}
-            \scalebox{0.5}{\input{plots/all_scatter.pgf}}
+            \scalebox{0.5}{\input{plots/color_log.pgf}}
         \end{center}
     \end{figure}
 \end{frame}
 
+\begin{frame}{Compression performance}
+    \begin{figure}[h]
+        \begin{center}
+            \scalebox{0.5}{\input{plots/all_1.pgf}}
+        \end{center}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Decompression performance}
+    \begin{figure}[h]
+        \begin{center}
+            \scalebox{0.5}{\input{plots/decompression_1.pgf}}
+        \end{center}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Datasets}
+    \begin{itemize}
+        \item KCDC - txt (very compressable)
+        \item CERN - root (precompressed)
+        \item Cera - NetCDF (in part already compressed)
+        \item NCDC - GRIB2 (precompressed)
+        \item \textrightarrow many scientific data formats come with built in compression
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Blocksize}
+    \begin{itemize}
+        \item useful information for parallelizing
+        \item we had a look at different block sizes 
+        \item very little influence
+    \end{itemize}
+    \vspace{-0.9em}
+    \begin{figure}[h]
+        \begin{center}
+            \scalebox{0.42}{\input{plots/blocksize_1.pgf}}
+        \end{center}
+    \end{figure}
+\end{frame}
+
+
+\section{Summary}
 \begin{frame}{Penguins}
 \begin{figure}
 \captionsetup[subfigure]{labelformat=empty}
