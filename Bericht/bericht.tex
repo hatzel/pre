@@ -97,9 +97,9 @@
 
 \chapter*{Abstract}
 Compression has always been an important topic in computing but has recently risen in importance as the development of both storage capacity and speed is unable to keep up with the growth in computing power.
-This report aims to compare some of the known compression algorithms in both speed of decompression and compression as well as the compression ratio. We specifically looked at scientific data as it is prevalent in HPC application.
-Overall we saw that, while a lot of scientific data already has compression built into the used file format, a lot of memory can be saved on uncompressed data.
-Depending on whether speed or compression ratio are more important an a specific case different algorithms might be the right choice.
+This report aims to compare some of the popular compression algorithms in both speed of decompression and compression as well as the compression ratio. We specifically look at scientific data as it is prevalent in HPC application.
+Overall we see that, while a lot of scientific data already has compression built into the used file format, a lot of memory can be saved on uncompressed data.
+Depending on whether speed or compression ratio are more important in a specific case, we recommend different compression algorithms.
 \thispagestyle{empty}
 
    
@@ -166,36 +166,64 @@ We then applied the metric using two different scenarios and found recommended a
 \chapter{Design and Implementation}
 \label{Design}
 %TODO expand
-We implemented a script to test compression algorithms on multiple datasets based on the open source tool fsbench. 
-Fsbench is written in C++ and has the option to output the data it gathers, machine readable, as csv.
-However the tool is not capable of batch processing multiple files. \\
-This is where our script comes in, we intend to provide a simple interface to test entire directory structures and store them in easy to use formats.
-We decided to go with sqlite as a data store since it combines the simplicity of normal files with some of the performance and usage benefits of databases. \\
-Our script aims to speed up the benchmarking process by launching multiple instances of fsbench on the different cores of the system.
+
+This chapter will first describe the initial design of the tools we developed. It will then lay out the major issues we had during implementing this design and changes we made to solve those issues. Finally, we will discuss some of the drawbacks of our solution.
+
+\section{Design}
+
+We planned to implement a script that would compress and decompress sets of data files, and gather statistics about the test runs.
+
+To do this, our script utilizes fsbench. Fsbench is a free open source tool implemented in C++ that is able to test a set of compression algorithms against a file. It is, however, not capable of batch processing multiple files.
+
+This is where our script comes in. We provide a simple-to-use interface to test entire directory structures and store the resulting data in an easily processable format. We decided to go with sqlite as a data store since it combines the simplicity of having just one database file with the performance and usage benefits taht are typical for relational databases.
+
+Our script aims to speed up the benchmarking process by launching multiple instances of fsbench on the different processing cores available in the system.
 For this we decided to use the python process pool implementation as it provides a simple way to split up the workload.
 Our multiprocessing model therefore just works by enqueuing all files that are to be benchmarked (represented by there filenames) into a queue.
 Each of the worker process will benchmark the compression of this file as soon at it is done with the previous task by starting an fsbench instance.
-After each finished instance of the benchmarks, meaning one run of fsbench, the main process will get the results and write them into a sqlite database.
 
-We provide a secondary script to help visualize the results. 
-The library matplotlib to help with this visualization as it provides a rich interface for displaying diagrams, graphs and the like.
-The visualization script aims to provide some capabilities to filter the data and get a good first impression of the gathered data and was also used to create the diagrams and tables in this document.
+Each fsbench instance is provided the file and the list of compression algorithms to test (given as command line arguments to our script). The instance is also instructed to output test run results in the machine-readable csv format.
 
+After each finished instance of the benchmarks, meaning one run of fsbench, the main process will retreive the results and write them into a sqlite database.
 
-Along the way we encountered a few issues, after first implementing the whole thing using pythons thread safe queue we noticed that we needed further abstraction in order to ensure a readable script. We used the python process pool to achieve this.
+Additionaly, we provide a second script to help visualize and format the results. 
+This uses the library matplotlib that provides a rich interface for displaying diagrams, graphs and the like.
 
-Fsbench in it's non interactive mode, meaning the csv mode that is used for machine parsable results, also does not supply results such as the compression ratio but instead provides the data to calculate these yourself. We decided to store data with the calculated results the database since operations such as averaging the compression ratio of many files would otherwise be very slow.
-While views would have been an option we decided that some 20-30\% increase in result size would be more bearable than contently having slow querys while analyzing the data.
+We also implemented a function to generate \LaTeX tables to get the results into this report in an automated fashion.
 
-Since our script supports resuming the benchmark of a whole directory by just running the benchmark again we need to quickly access our database to check if a given file has already been benchmarked (with the same options). Our naive approach of a sqlite database without explicit primary keys and indexes turned out to be too slow for this.
-We had to introduce sqlite indexes to the filename and algorithm columns to make this lookup faster. This made us go from around 7 seconds for one thousand files to around one second for the resuming a twenty thousand entry benchmark. 
+The visualization script aims to provide some capabilities to filter the data and get a good first impression of the gathered results.
 
-Another issue we encountered relatively late was febench report misleading data. If fsbench recognizes a file cannot be compressed (meaning the compression ratio being barely above or equal to 1) it won't actually benchmark decompression but instead report a very large number for decompression speed. We only noticed this since our averages were raising to absurd values.
-We ended up fixing this by just ignoring files with a compression ratio of 1 for decompression speed.
+\section{Implementation}
+
+Along the way we faced a few issues: After the first iteration which implemented the multiprocessing aspect using pythons thread safe queues we noticed that the script quickly became confusing to read. Using python's process pool, we introduced another level of abstraction in order to ensure a readable script.
+
+We run fsbench in it's non interactive mode. This comes with the limitation that fsbench does not output calculated results such as the compression ratio but instead provides the raw data to calculate these yourself. We decided to compute those calculated results (mainly compression ratio and comression-/decompression-speed) in the database. This takes some calculation time when storing the data, but makes operations such as averaging the compression ratio of many files faster and simpler. We chose this trade-off since we expected to query data multiple times with different querys after having run a benchmark once.
+
+While views would have been an option we decided that a 20-30\% increase in database size would be a smaller burden than contently waiting for slow querys while analyzing the data.
+
+Since our script supports resuming the benchmark of a whole directory by just running the benchmark again we need to quickly access our database to check if a given file has already been benchmarked (with the same options). Our simple approach of a sqlite database without explicit primary keys and indices turned out to be too slow for this.
+To speed the queries up, we introduced an sqlite index covering the filename and algorithm columns. This accelerated the query from about 7 seconds for one thousand files to about one second for resuming a twenty thousand entry benchmark.
+
+Another issue we encountered relatively late was fsbench report misleading data. If fsbench recognizes a file cannot be compressed (meaning the compression ratio being barely above or equal to 1) it won't actually benchmark decompression but instead report a very large number for decompression speed (this might be the time required to copy the memory contents from the input buffer to the output buffer). We only noticed this since our averages were raising to absurd values. This issue was fixed by simply discarding results with a compression ratio of 1 when calculating decompression speed.
+
+\section{Drawbacks}
+
+One major drawback of our approach is that fsbench does the whole benchmark for one file in one piece and in memory. While this makes it easy for fsbench to provide unbiased results (no need to stop the measurement, copy new data into the memory and start the measurement again), it also means that we can not currently do benchmarks for files with a size greater than about \(\frac{1}{3}\) of the memory available to the system.
+
+This does not influence our results in a meaningful way, since we compress the data in smaller blocks anyway (and those blocksizes have little impact on the results except if they are really small, see Figure \ref{fig:blocksizes}). To benchmark bigger files, it would currently be necessary to split them up into smaller chunks manually.
 
 \chapter{Measuring and Processing}
 \label{Measuring and Processing}
 %TODO continue
+
+\section{Benchmark Machines Specifications}
+All benchmarks were run on a machine with the following specifications:
+
+\begin{itemize}
+\item 2 Intel Xeon X5560 mit je \(4 * 2.8\text{GHz}\)
+\item 12GB RAMs
+\end{itemize}
+
 \section{Data Sources}
 The examined data sets come from 5 sources and contain different kinds of information.
 The first source is the KASCADE Cosmic Ray Data Centre (KCDC)\footnote{\url{https://kcdc.ikp.kit.edu/}} of the Karlsruhe Institute of Technology which provides data about cosmic rays. 
@@ -208,8 +236,7 @@ The second source provides climatic data and is the Cera database from the DKRZ\
 It is stored as in the NetCDF format.
 NetCDF is a binary format for storing array-like data that contains meta data describing the stored data.
 %TODO what about internal compression of netcdf
-\cite{NetCDF}
-%TODO source: https://www.unidata.ucar.edu/software/netcdf/docs/netcdf.html#Introduction
+\mcite{NetCDF}
 \\
 
 The third set of data sets is provided by the National Climatic Data Center (NCDC) and their global forecast system\footnote{\url{http://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs}}. 
@@ -236,7 +263,7 @@ To simulate realistic splitting of these files for multiprocessing we decided to
 \input{data_files/blocksizes.tex}
 This data clearly show that the block sizes do not have a large impact on the performance of compression algorithms. 
 In general a trend of less but faster compression for smaller block sizes can be observed.
-This can be attributed to the fact that the algorithms have a smaller 'backlog' of data to look for possible compression and therefore operate faster. \cite{ResComp}
+This can be attributed to the fact that the algorithms have a smaller 'backlog' of data to look for possible compression and therefore operate faster. \mcite{ResComp}
 Lowering the block size may actually have a positive impact on performance and not affect compression ratio.
 
 For block sizes down to 1MB compression ratio isn't noticeably affected.
@@ -273,13 +300,12 @@ This data set, while yielding no surprises in algorithm performance, shows the i
 The data representation was however also very poorly designed as it stores mostly numbers in represented as characters.
 The possible compression ratio would be a lot lower if the data was actually stored as a binary float or integer representation.
 \input{data_files/kcdc.tex}
-\FloatBarrier
+
 %TODO Text something to kcdc
 
 The .root file format is already compressed an therefore none of our algorithms can achieve any meaningful compression. More interesting is the fact that some of the algorithms are able to finish very quickly with a compression ratio of 1.0. 
 Meaning that these algorithms have built in detections for when a file won't compress well and can react accordingly.  
 \input{data_files/cern.tex}
-\FloatBarrier
 
 The netCDF data is an interesting dataset since while lz4 and lzo seem to recognize it as incompressible other algorithms still achieve decent results.
 The data format supports compression without any user interaction such as explicitly decompressing the file. It appears as though this instance of a netCDF file is compressed, as we can see in figure \ref{fig:nc_uncompressed} not all netCDF files are compressed.
@@ -288,14 +314,14 @@ For netCDF files that do not have internal compression we can again achieve grea
 
 \input{data_files/netcdf-uncompressed.tex}
 
-\FloatBarrier
 \input{data_files/ncdc.tex}
 We expected the compression algorithms to at least give us some compression.
 However the compression ratio even for the slower algorithms is barely above $1.0$
-The GRIB2 files appear to also be compressed. GRIB2 does support, file format specific, compression \cite{GRIMP}.
+The GRIB2 files appear to also be compressed. GRIB2 does support, file format specific, compression \mcite{GRIMP}.
 
-
-All these results are summed up in Figure \ref{fig:all_comp} (values in Table \ref{tab:all_comp})
+\FloatBarrier
+Joined all this results lead to the Figure \ref{fig:all_comp} with values in Table \ref{tab:all_comp}.
+Furthermore you can look at the joinde decompression results in Figure \ref{fig:all_decomp} with their values in Table \ref{tab:all_dec}.
 \input{data_files/all.tex}
 \FloatBarrier
 
@@ -385,7 +411,7 @@ lz4 and lzo both meet these requirements.
 For archival one has to make the trade off of memory and computing power. 
 Depending on how both factors are valued one might come to the conclusion that bzip is in fact the best algorithm. 
 This supports the findings so far.
-On the other hand other papers have found lz4 to have the better trade off even for long term archival. %TODO Source.
+On the other hand other papers have found lz4 to have the better trade off even for long term archival\mcite{PPerfHPC}.
 \\
 One arising questions is if our metric is a suitable one, since it does not value the trade-off zstd makes with neutral input in column 3.
 But zstd is not outstanding in its measurements.
