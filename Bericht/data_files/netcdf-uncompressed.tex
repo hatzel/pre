@@ -1,0 +1,26 @@
+\begin{figure}[h]
+\begin{center}
+    \scalebox{0.6}{\input{plots/netcdf_uncompressed.pgf}}
+\end{center}
+\caption{Uncompressed netCDF file}
+\label{fig:nc_uncompressed}
+\end{figure}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l|r|r|}
+%%Data from new.db, filtered with: %ice_thi%
+\hline
+ Unknown Metric   &   Compression Ratio &   Compression speed MByte/s \\
+\hline
+ bzip2            &                9.44 &                        5.28 \\
+ LZ4              &                6.88 &                     1699.31 \\
+ LZO              &                6.91 &                     2146.50 \\
+ zlib             &                8.74 &                       63.13 \\
+ ZSTD             &                8.49 &                      574.42 \\
+\hline
+\end{tabular}% 
+\caption{Results, uncompressed netCDF file}
+\label{tab:nc_uncompressed}
+\end{center}
+\end{table}
