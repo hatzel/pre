@@ -247,6 +247,7 @@ Therefore in general our algorithms seem to be viable for parallel compression a
 
 \FloatBarrier
 \section{Results}
+\label{Results}
 The first approach is to test algorithms on the Silesia Corpus to decide which algorithms will be looked at in more detail.
 \\
 Testing on the Silesia Compression Corpus leads to the results in figure \ref{fig:sc_res}. 
@@ -299,6 +300,7 @@ All these results are summed up in Figure \ref{fig:all_comp} (values in Table \r
 \FloatBarrier
 
 \section{Scenarios}
+\label{Scenarios}
 
 For evaluating the benchmark results and choosing algorithm recommendations, we first need to describe the different scenarios that we expect compression to be used in.
 
@@ -373,11 +375,35 @@ There are five interesting use cases:
 \label{Discussion}
 Overall it is clear that some algorithms will be far more usable for live file system compression while others are more viable for long term compression where a high compression ratio is most important.
 There are two general use cases, one being the compression of live file systems and the other being compression for archival.
-For live file systems compression speeds should be on par with disks speeds to ensure the system can run at full speed.
+\\
+Table \ref{tab:metric} suggest that lz4 is the most suitable algorithm for the live file system scenario \ref{Scenarios}.
+We can derive this because live systems need good compression speed as well as good decompression speed, which stands between the cases in column 1 and 2.
+Furthermore we can derive from table \ref{tab:metric} that bzip2 is the best algorithm for the archive scenario, which corresponds to the last case of the last column of table \ref{tab:metric}.
+\\
+In addition live file systems compression speeds should be on par with disks speeds to ensure the system can run at full speed.
 lz4 and lzo both meet these requirements.
-For archival one has to make the trade off of memory and computing power. Depending on how both factors are valued one might come to the conclusion that bzip is in fact the best algorithm. But other papers have found lz4 to have the better trade off even for long term archival. %TODO Source.
-
-\begin{table}
+For archival one has to make the trade off of memory and computing power. 
+Depending on how both factors are valued one might come to the conclusion that bzip is in fact the best algorithm. 
+This supports the findings so far.
+On the other hand other papers have found lz4 to have the better trade off even for long term archival. %TODO Source.
+\\
+One arising questions is if our metric is a suitable one, since it does not value the trade-off zstd makes with neutral input in column 3.
+But zstd is not outstanding in its measurements.
+The balancing trade-off of zstd is not a perfect one, it gives more performance away in both directions.
+In addition zstd has never a top measurement but it neither is one of the worst measurements in any of the covered cases.
+So it is possible to conclude if we examine more than one ratio, the metric becomes even more viable, because we can get a better view of the algorithms this way.
+\\
+One might ask wether compression is worth for one the two scenarios from \ref{Scenarios}.
+The question arises because much data might be in a compressed formate as shown in the \ref{Results}.
+In Table \ref{tab:all_comp} and Figure \ref{fig:all_comp} we measure a ratio of 2 for lzo and lz4 for compressed and uncompressed data sets.
+Additionally we observe a ratio of 4 for algorithm bzip, the candidate for archive purpose.
+All in all if it is possible to double the storage capacity on the live system and to increase the storage capacity of the archive system by a factor of 4 you can state that compression is valid in the HPC field from the storage point of view.
+\\ \\
+\newpage
+Compression should ideally not impact the performance of the system. 
+For read write operations this is mostly the case if compression speeds keep up with storage speeds.
+Our results find lz4 to have an average compression speed of 514MB/s meaning that to keep up with a storage speed of modern clusters, see table \ref{tab:storage_speeds}, one would need 800 of our machines cores. 
+\begin{table}[h]
 \begin{center}
 \begin{tabular}{|l|r|}
     \hline
@@ -390,13 +416,12 @@ For archival one has to make the trade off of memory and computing power. Depend
 \label{tab:storage_speeds}
 \end{center}
 \end{table}
-
-Compression should ideally not impact the performance of the system. 
-For read write operations this is mostly the case if compression speeds keep up with storage speeds.
-Our results find lz4 to have an average compression speed of 514MB/s meaning that to keep up with a storage speed of modern clusters, see table \ref{tab:storage_speeds}, one would need 800 of our machines cores. 
+\FloatBarrier
 
 This is by no means an impossible task as our results were measured on an older machine and a cluster has a lot of nodes at its disposal. But it means that in order to achieve a the same with bzip2 one would need around $50000$ of our cores.
 %TODO what are read/write speed on clusters
+\\
+
 
 \chapter{Conclusion}
 \label{Conclusion}
