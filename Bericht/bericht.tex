@@ -273,6 +273,8 @@ Therefore in general our algorithms seem to be viable for parallel compression a
 \FloatBarrier
 \section{Results}
 \label{Results}
+
+\subsection{Silesia Corpus}
 The first approach is to test algorithms on the Silesia Corpus to decide which algorithms will be looked at in more detail.
 \\
 Testing on the Silesia Compression Corpus leads to the results in figure \ref{fig:sc_res}. 
@@ -293,7 +295,7 @@ For the other extreme of the speed compression ratio trade-off we decided to go 
 
 
 % all samples
-
+\subsection{All Samples}
 
 \input{data_files/compression-colors.tex}
 \input{data_files/compression-colors-log.tex}
@@ -310,7 +312,7 @@ This means that we generally have a linear relationship between compression rati
 
 
 % kcdc
-
+\subsection{KCDC}
 
 %TODO Text something to ncdc
 \input{data_files/kcdc.tex}
@@ -323,23 +325,23 @@ The possible compression ratio would be a lot lower if the data was actually sto
 
 
 % ncdc
-
-
 \FloatBarrier
+\subsection{NCDC}
+
 \input{data_files/ncdc.tex}
 %TODO Text something to kcdc
 We expected the compression algorithms to at least give us some compression.
 However the compression ratio even for the slower algorithms is barely above $1.0$
-The GRIB2 files appear to also be compressed. GRIB2 does support file format specific compression\textsuperscript{\cite{GRIMP}}.
+The GRIB2 files appear to also be compressed. GRIB2 does support file format specific compression \cite{GRIMP}.
 
 
 
 
 
 % cern
-
-
 \FloatBarrier 
+\subsection{CERN}
+
 \input{data_files/cern.tex}
 
 The .root file format is already compressed an therefore none of our algorithms can achieve any meaningful compression. More interesting is the fact that some of the algorithms are able to finish very quickly with a compression ratio of 1.0. 
@@ -350,9 +352,9 @@ Meaning that these algorithms have built in detections for when a file won't com
 
 
 % dkrz
-
-
 \FloatBarrier
+\subsection{DKRZ}
+
 \input{data_files/dkrz.tex}
 The netCDF data is an interesting dataset since while lz4 and lzo seem to recognize it as incompressible other algorithms still achieve decent results.
 The data format supports compression without any user interaction such as explicitly decompressing the file. It appears as though this instance of a netCDF file is compressed, as we can see in figure \ref{fig:nc_uncompressed} not all netCDF files are compressed.
@@ -362,9 +364,10 @@ The data format supports compression without any user interaction such as explic
 
 
 % netcdf-uncompressed
-
-
 \FloatBarrier
+\subsection{Uncompressed netCDF}
+\FloatBarrier
+
 \input{data_files/netcdf-uncompressed.tex}
 For netCDF files that do not have internal compression we can again achieve great compression ratios with all algorithms and get the usual split into slower and faster algorithms.
 
@@ -373,9 +376,10 @@ For netCDF files that do not have internal compression we can again achieve grea
 
 
 % all data
-
-
 \FloatBarrier
+\subsection{All Data}
+\FloatBarrier
+
 \input{data_files/all.tex}
 Joined all this results lead to the Figure \ref{fig:all_comp} with values in Table \ref{tab:all_comp}.
 Furthermore you can look at the joined decompression results in Figure \ref{fig:all_decomp} with their values in Table \ref{tab:all_dec}.
