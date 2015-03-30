@@ -272,6 +272,24 @@ This means that we generally have a linear relationship between compression rati
 
 \FloatBarrier
 
+\section{Scenarios}
+
+For evaluating the benchmark results and choosing algorithm recommendations, we first need to describe the different scenarios that we expect compression to be used in.
+
+\subsection{Live File System}
+
+The first scenario is transparent compression of the live file system used by a HPC cluster. In addition to computation results, programs write intermediate states of data and metadata to the file system and may read those to continue computation at a later point.
+
+In this scenario, it is important that the comression and decompression speed of the algorithm chosen are fast enough as to not limit the system's I/O performance.  The algorithms should be able to compress/decompress as fast as or faster than the storage (probably HDDs) can write/read data.
+
+Ideally, an algorithm should not slow down much on incompressible or lightly compressible data.
+
+While the compression ratio in this scenario is not as important as the speed, a high ratio may (in addition to disk space savings) actually lead to improved I/O performance, because less data needs to be written to disk.
+
+\subsection{Archival}
+
+In the second scenario, data is to be compressed for archival. Since this data is not expected to be read regularly, compression/decompression speed are not as important as in scenario 1. Compression ratio is more important since it saves space required for the archive, which lowers maintenance costs.
+
 \section{Evaluation}
 In order to evaluate these results a comparison metric is required.
 The resulting data can be interpreted as a set consiting of 2-tuples.
