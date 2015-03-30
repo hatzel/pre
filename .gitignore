@@ -20,3 +20,5 @@
 
 # bench.py results
 benchmark.db
+
+*.ods*
