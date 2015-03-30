@@ -108,9 +108,9 @@
 \label{Introduction}
 %TODO ausbaubar
 
-Since the days of modern computers compression is a very important field of research and development. But even before the advent of digital computing, there were applications for compression.
+Since and even before the start of the days of modern computers compression is of a certain importance.
 
-Before computers as we know them today became ubiqitous, compression could be found (among others) in commercial codes for telegraphing, or even in the still-in-use morse code.
+Before computers as we know them today became ubiqitous, compression could be found (among others) in commercial codes for telegraphing\mcite{com}, or even in the still-in-use morse code.
 
 The main reason to use a form of compression in these systems was to reduce the time it took to send a certain message. This reason carries on into the modern age in the form of compressed network communications; many other applications for compression have been discovered since then.
 
@@ -252,7 +252,7 @@ The corresponding values are shown in table \ref{tab:sc_res}. \\
 
 \input{data_files/silesia.tex}
 The graph looks at compression speed and compression ratio. A point to the top tight of another one means that, for the two metrics and our given dataset, the top right algorithms is flat out better. Given this dataset we decided to take a closer look at both lz4 and lzo since these are the algorithms that mostly focus on the speed and sacrifice compression ratio. We will take a look at zstd since it appears to make a uniquely balanced trade-off. \\
-For the other extreme of the speed compression ratio trade-off we decided to go with bzip2. Both 7z-deflate variants are slower than bzip2 on the given dataset therfore we decided to go with zlib as well as an algorithm a little more balanced towards the speed aspect.
+For the other extreme of the speed compression ratio trade-off we decided to go with bzip2. Both 7z-deflate variants are slower than bzip2 on the given dataset therefore we decided to go with zlib as well as an algorithm a little more balanced towards the speed aspect.
 
 \input{data_files/compression-colors.tex}
 \input{data_files/compression-colors-log.tex}
@@ -263,9 +263,8 @@ Another intresting aspect is the fact that each of the algorithms roughly descri
 This means that we generally have a linear relationship between compression ratio and compression speed.
 \FloatBarrier
 
-
-\input{data_files/all.tex}
-%TODO Text something to all
+\input{data_files/ncdc.tex}
+%TODO Text something to ncdc
 
 This data set, while yielding no surprises in algorithm performance, shows the impact compression can actually have. With a compression ratio of 2.5 the size of a file is cut in less then half.
 The data representation was however also very poorly designed as it stores mostly numbers in represented as characters.
@@ -286,8 +285,10 @@ If the file does not have internal compression we can again achieve great compre
 \input{data_files/netcdf-uncompressed.tex}
 %TODO Text something to dkrz
 \FloatBarrier
-\input{data_files/ncdc.tex}
-%TODO Text something to ncdc
+
+\input{data_files/all.tex}
+This summarizes to the Figure \ref{fig:all_comp} (values in Table \ref{tab:all_comp})
+
 
 \FloatBarrier
 
@@ -389,9 +390,16 @@ Our results find lz4 to have an average compression speed of 514MB/s meaning tha
 
 This is by no means an impossible task as our results were measured on an older machine and a cluster has a lot of nodes at its disposal. But it means that in order to achieve a the same with bzip2 one would need around $50000$ of our cores.
 %TODO what are read/write speed on clusters
+
 \chapter{Conclusion}
 \label{Conclusion}
-%TODO write
+Many of the data types in HPC use compressions themselves.
+This means to evaluate the usefullness of compression algorithms in the HPC field requires knowledge about the composition of the data.
+Therefore the composition has to be analyzed.
+\\
+
+
+
 
 \nocite{*}
 \bibliographystyle{alpha}
