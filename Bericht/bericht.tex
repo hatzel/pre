@@ -133,14 +133,15 @@ This leads us to the main purpose of this project: To find, through testing poss
 \label{Assignment and Methodology}
 %TODO ausbauen
 \section*{Assignment}
-The main assignment for this project is the performance analysis for different compression algorithms in the HPC field. 
-\\
-Therefore we have to analyse them for the different use cases of compression in the HPC field. 
-The main use cases are the storage in the life system and the storage in the archive system.
-\\
-Furthermore we have to look at the decompression speed and the ways it effects our two cases. 
-\\
-Analysing requires tools to get information about data. There are existing tools for testing multiple compression algorithms on a single file. So one task is to find a way to test multiple files with multiple algorithms.
+The main assignment for this project is the performance analysis for different compression algorithms in applications typical for HPC. We split this assignment into multiple sub-tasks:
+
+\begin{enumerate}
+\item Identify common scenarios in which compression can be applied in HPC
+\item Simulate these scenarios using a set of compression algorithms, measuring the performance of each algorithm in compression/decompression speed and compression ratio
+\item Analyze the resulting performance data to find an optimal algorithm for each scenario
+\end{enumerate}
+
+We also need to find or build appropriate tools to simulate, measure and analyze compression algorithms.
 
 
 \section*{Methodology}
