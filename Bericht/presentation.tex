@@ -1,0 +1,100 @@
+\documentclass[10pt, compress]{beamer}
+\usetheme{Rochester}
+\usecolortheme{beaver}
+\beamertemplatenavigationsymbolsempty
+
+\usepackage{pgfplots}
+\usepackage{pgf}
+\usepackage{tikz}
+
+\title{Evaluating Compression}
+\date{\today}
+\author{Lukas Stabe, Arne Struck, Hans Ole Hatzel}
+
+
+\section{Introduction}
+\begin{document}
+\maketitle
+\begin{frame}{Overview}
+    \tableofcontents
+\end{frame}
+
+
+\begin{frame}{Assignment}
+    \input{data_files/compression-colors.tex}
+    \begin{itemize}
+        \item Benchmark different algorithms
+        \item on different sets of scientific data
+        \item automate benchmarking of whole directory structures
+        \item visualize results
+        \item assess which algorithms are the best
+    \end{itemize}
+\end{frame}
+\begin{frame}{What is fsbench?}
+    \begin{itemize}
+        \item FOSS-tool
+        \item written in C++
+        \item support for multiple threads
+        \item comes with a lot of algorithms included
+    \end{itemize}
+    \vspace{1em}
+    Since the tool perfectly fits our usecase we decided to use it.
+    The project can be found here:    
+    \url{https://chiselapp.com/user/Justin_be_my_guide/repository/fsbench}
+\end{frame}
+\begin{frame}{How does our benchmark script work?}
+    \begin{itemize}
+        \item Python 3 script
+        \item scans directory structure
+        \item launches fsbench distributed on each core
+        \item saves the results in a sqlite3 database
+    \end{itemize}    
+\end{frame}
+
+\begin{frame}{How does our plotting script work?}
+    \begin{itemize}
+        \item Python 3 script
+        \item reads results from database
+        \item filters according to given command-line options
+        \item prints results in a pretty graph using matplotlib
+        \item prints base data as a latex 
+    \end{itemize}    
+\end{frame}
+
+\begin{frame}{Pretty graphs}
+    \begin{figure}[h]
+        \begin{center}
+            \scalebox{0.1}{\input{plots/all_scatter.pgf}}
+        \end{center}
+        \caption{All of our benchmarks colored by algorithm}
+        \label{fig:much_color}
+    \end{figure}
+\end{frame}
+
+\begin{frame}{Objectives}
+	%TODO Ziele
+\end{frame}
+
+\section{Procedure}
+\begin{frame}{Plan}
+	%TODO Projektplan, kp why nötig vllt in der art: was wurde getan
+\end{frame}
+
+\begin{frame}{Problems}
+	\begin{itemize}
+        \item implementation details
+        \item no obvious way to assess the multiple metrics of compression
+        \item python 2 vs 3.2 vs 3.4
+        \item fsbench memory usage
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Solutions}
+\end{frame}
+
+\section{Summary}
+\begin{frame}{Summary}
+	%TODO
+\end{frame}
+
+\end{document}
