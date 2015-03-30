@@ -6,6 +6,8 @@
 \usepackage{pgfplots}
 \usepackage{pgf}
 \usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{subfig}
 
 \title{Evaluating Compression}
 \date{\today}
@@ -128,6 +130,55 @@
 \end{frame}
 
 \section{Summary}
+\begin{frame}{Penguines}
+\begin{figure}[h]
+	\centering
+	\subfloat[bzip2]{
+		\uncover<1-2>{
+			\includegraphics[scale=0.14, angle=5]{pics/bzip2penguin.jpg}
+		}
+	}
+	\subfloat[lz4]{
+		\uncover<2>{
+  			\includegraphics[scale=0.15, angle=-5]{pics/lz4pinguin.jpg}
+  		}
+	}
+\end{figure}
+\end{frame}
+
+\begin{frame}{Penguines}
+\begin{figure}[h]
+	\centering
+	\subfloat[bzip2]{
+		\uncover<1-2>{
+			\includegraphics[scale=0.14, angle=5]{pics/bzip2penguin.jpg}
+		}
+	}
+	\subfloat[lz4]{
+		\uncover<2>{
+  			\includegraphics[scale=0.15, angle=-5]{pics/lz4pinguin.jpg}
+  		}
+	}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}{bzip2}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.25, angle=5]{pics/bzip2penguin.jpg}
+	\caption{bzip2 Penguines}
+\end{figure}
+\end{frame}
+
+\begin{frame}{lz4}
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=0.2, angle=-5]{pics/lz4pinguin.jpg}
+	\caption{lz4 Penguines}
+\end{figure}
+\end{frame}
+
 \begin{frame}{Summary}
 	%TODO
 \end{frame}
