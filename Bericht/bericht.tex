@@ -164,32 +164,51 @@ We then applied the metric using two different scenarios and found recommended a
 \chapter{Design and Implementation}
 \label{Design}
 %TODO expand
-We implemented a script to test compression algorithms on multiple datasets based on the open source tool fsbench. 
-Fsbench is written in C++ and has the option to output the data it gathers, machine readable, as csv.
-However the tool is not capable of batch processing multiple files. \\
-This is where our script comes in, we intend to provide a simple interface to test entire directory structures and store them in easy to use formats.
-We decided to go with sqlite as a data store since it combines the simplicity of normal files with some of the performance and usage benefits of databases. \\
-Our script aims to speed up the benchmarking process by launching multiple instances of fsbench on the different cores of the system.
+
+This chapter will first describe the initial design of the tools we developed. It will then lay out the major issues we had during implementing this design and changes we made to solve those issues. Finally, we will discuss some of the drawbacks of our solution.
+
+\section{Design}
+
+We planned to implement a script that would compress and decompress sets of data files, and gather statistics about the test runs.
+
+To do this, our script utilizes fsbench. Fsbench is a free open source tool implemented in C++ that is able to test a set of compression algorithms against a file. It is, however, not capable of batch processing multiple files.
+
+This is where our script comes in. We provide a simple-to-use interface to test entire directory structures and store the resulting data in an easily processable format. We decided to go with sqlite as a data store since it combines the simplicity of having just one database file with the performance and usage benefits taht are typical for relational databases.
+
+Our script aims to speed up the benchmarking process by launching multiple instances of fsbench on the different processing cores available in the system.
 For this we decided to use the python process pool implementation as it provides a simple way to split up the workload.
 Our multiprocessing model therefore just works by enqueuing all files that are to be benchmarked (represented by there filenames) into a queue.
 Each of the worker process will benchmark the compression of this file as soon at it is done with the previous task by starting an fsbench instance.
-After each finished instance of the benchmarks, meaning one run of fsbench, the main process will get the results and write them into a sqlite database.
 
-We provide a secondary script to help visualize the results. 
-The library matplotlib to help with this visualization as it provides a rich interface for displaying diagrams, graphs and the like.
-The visualization script aims to provide some capabilities to filter the data and get a good first impression of the gathered data and was also used to create the diagrams and tables in this document.
+Each fsbench instance is provided the file and the list of compression algorithms to test (given as command line arguments to our script). The instance is also instructed to output test run results in the machine-readable csv format.
 
+After each finished instance of the benchmarks, meaning one run of fsbench, the main process will retreive the results and write them into a sqlite database.
 
-Along the way we encountered a few issues, after first implementing the whole thing using pythons thread safe queue we noticed that we needed further abstraction in order to ensure a readable script. We used the python process pool to achieve this.
+Additionaly, we provide a second script to help visualize and format the results. 
+This uses the library matplotlib that provides a rich interface for displaying diagrams, graphs and the like.
 
-Fsbench in it's non interactive mode, meaning the csv mode that is used for machine parsable results, also does not supply results such as the compression ratio but instead provides the data to calculate these yourself. We decided to store data with the calculated results the database since operations such as averaging the compression ratio of many files would otherwise be very slow.
-While views would have been an option we decided that some 20-30\% increase in result size would be more bearable than contently having slow querys while analyzing the data.
+We also implemented a function to generate \LaTeX tables to get the results into this report in an automated fashion.
 
-Since our script supports resuming the benchmark of a whole directory by just running the benchmark again we need to quickly access our database to check if a given file has already been benchmarked (with the same options). Our naive approach of a sqlite database without explicit primary keys and indexes turned out to be too slow for this.
-We had to introduce sqlite indexes to the filename and algorithm columns to make this lookup faster. This made us go from around 7 seconds for one thousand files to around one second for the resuming a twenty thousand entry benchmark. 
+The visualization script aims to provide some capabilities to filter the data and get a good first impression of the gathered results.
 
-Another issue we encountered relatively late was febench report misleading data. If fsbench recognizes a file cannot be compressed (meaning the compression ratio being barely above or equal to 1) it won't actually benchmark decompression but instead report a very large number for decompression speed. We only noticed this since our averages were raising to absurd values.
-We ended up fixing this by just ignoring files with a compression ratio of 1 for decompression speed.
+\section{Implementation}
+
+Along the way we faced a few issues: After the first iteration which implemented the multiprocessing aspect using pythons thread safe queues we noticed that the script quickly became confusing to read. Using python's process pool, we introduced another level of abstraction in order to ensure a readable script.
+
+We run fsbench in it's non interactive mode. This comes with the limitation that fsbench does not output calculated results such as the compression ratio but instead provides the raw data to calculate these yourself. We decided to compute those calculated results (mainly compression ratio and comression-/decompression-speed) in the database. This takes some calculation time when storing the data, but makes operations such as averaging the compression ratio of many files faster and simpler. We chose this trade-off since we expected to query data multiple times with different querys after having run a benchmark once.
+
+While views would have been an option we decided that a 20-30\% increase in database size would be a smaller burden than contently waiting for slow querys while analyzing the data.
+
+Since our script supports resuming the benchmark of a whole directory by just running the benchmark again we need to quickly access our database to check if a given file has already been benchmarked (with the same options). Our simple approach of a sqlite database without explicit primary keys and indices turned out to be too slow for this.
+To speed the queries up, we introduced an sqlite index covering the filename and algorithm columns. This accelerated the query from about 7 seconds for one thousand files to about one second for resuming a twenty thousand entry benchmark.
+
+Another issue we encountered relatively late was fsbench report misleading data. If fsbench recognizes a file cannot be compressed (meaning the compression ratio being barely above or equal to 1) it won't actually benchmark decompression but instead report a very large number for decompression speed (this might be the time required to copy the memory contents from the input buffer to the output buffer). We only noticed this since our averages were raising to absurd values. This issue was fixed by simply discarding results with a compression ratio of 1 when calculating decompression speed.
+
+\section{Drawbacks}
+
+One major drawback of our approach is that fsbench does the whole benchmark for one file in one piece and in memory. While this makes it easy for fsbench to provide unbiased results (no need to stop the measurement, copy new data into the memory and start the measurement again), it also means that we can not currently do benchmarks for files with a size greater than about \(\frac{1}{3}\) of the memory available to the system.
+
+This does not influence our results in a meaningful way, since we compress the data in smaller blocks anyway (and those blocksizes have little impact on the results except if they are really small, see Figure \ref{fig:blocksizes}). To benchmark bigger files, it would currently be necessary to split them up into smaller chunks manually.
 
 \chapter{Measuring and Processing}
 \label{Measuring and Processing}
