@@ -247,6 +247,7 @@ The graph looks at compression speed and compression ratio. A point to the top t
 For the other extreme of the speed compression ratio trade-off we decided to go with bzip2. Both 7z-deflate variants are slower than bzip2 on the given dataset therfore we decided to go with zlib as well as an algorithm a little more balanced towards the speed aspect.
 
 \input{data_files/compression-colors.tex}
+\input{data_files/compression-colors-log.tex}
 Figure \ref{fig:much_color} shows all of our samples. The most interesting part is the very high compression speed for files with a compression ratio of around $1.0$. This can be attributed to some of the algorithms recognizing that they operate on pre-compressed data, like the .root file from CERN Open-data.
 
 The graph also gives a relativity simple overview of where most of the samples fall for each algorithm.
