@@ -177,6 +177,14 @@
 
 
 \section{Summary}
+\begin{frame}{Summary}
+    \begin{itemize}
+        \item lz4 beats lzo due to higher decompression speed
+        \item bzip wins if compression ratio is most important
+        \item zstd is a good compromise if only one algorithm can be chosen
+    \end{itemize}
+\end{frame}
+
 \begin{frame}{Penguins}
 \begin{figure}
 \captionsetup[subfigure]{labelformat=empty}
@@ -194,15 +202,6 @@
     }
   \end{subfigure}
 \end{figure}
-\end{frame}
-
-
-\begin{frame}{Summary}
-	\begin{itemize}
-		\item lz4 beats lzo due to higher decompression speed
-		\item bzip wins if compression ratio is most important
-		\item zstd is a good compromise if only one algorithm can be chosen
-	\end{itemize}
 \end{frame}
 
 \end{document}
