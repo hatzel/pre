@@ -133,14 +133,15 @@ This leads us to the main purpose of this project: To find, through testing poss
 \label{Assignment and Methodology}
 %TODO ausbauen
 \section*{Assignment}
-The main assignment for this project is the performance analysis for different compression algorithms in the HPC field. 
-\\
-Therefore we have to analyse them for the different use cases of compression in the HPC field. 
-The main use cases are the storage in the life system and the storage in the archive system.
-\\
-Furthermore we have to look at the decompression speed and the ways it effects our two cases. 
-\\
-Analysing requires tools to get information about data. There are existing tools for testing multiple compression algorithms on a single file. So one task is to find a way to test multiple files with multiple algorithms.
+The main assignment for this project is the performance analysis for different compression algorithms in applications typical for HPC. We split this assignment into multiple sub-tasks:
+
+\begin{enumerate}
+\item Identify common scenarios in which compression can be applied in HPC
+\item Simulate these scenarios using a set of compression algorithms, measuring the performance of each algorithm in compression/decompression speed and compression ratio
+\item Analyze the resulting performance data to find an optimal algorithm for each scenario
+\end{enumerate}
+
+We also need to find or build appropriate tools to simulate, measure and analyze compression algorithms.
 
 
 \section*{Methodology}
@@ -242,12 +243,15 @@ Testing on the Silesia Compression Corpus leads to the results in figure \ref{fi
 The corresponding values are shown in table \ref{tab:sc_res}. \\
 
 \input{data_files/silesia.tex}
-
 The graph looks at compression speed and compression ratio. A point to the top tight of another one means that, for the two metrics and our given dataset, the top right algorithms is flat out better. Given this dataset we decided to take a closer look at both lz4 and lzo since these are the algorithms that mostly focus on the speed and sacrifice compression ratio. We will take a look at zstd since it appears to make a uniquely balanced trade-off. \\
 For the other extreme of the speed compression ratio trade-off we decided to go with bzip2. Both 7z-deflate variants are slower than bzip2 on the given dataset therefore we decided to go with zlib as well as an algorithm a little more balanced towards the speed aspect.
 
+\input{data_files/compression-colors.tex}
+Figure \ref{fig:much_color} shows all of our samples. The most interesting part is the very high compression speed for files with a compression ratio of around $1.0$. This can be attributed to some of the algorithms recognizing that they operate on pre-compressed data, like the .root file from CERN Open-data.
 
-
+The graph also gives a relativity simple overview of where most of the samples fall for each algorithm.
+Another intresting aspect is the fact that each of the algorithms roughly describes a linear function with their different samples (excluding the points at compression ratio $1.0$ with high compression speeds).
+This means that we generally have a linear relationship between compression ratio and compression speed.
 \FloatBarrier
 
 \input{data_files/ncdc.tex}
