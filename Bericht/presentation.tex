@@ -15,9 +15,13 @@
 \author{Lukas Stabe, Arne Struck, Hans Ole Hatzel}
 
 
-\section{Introduction}
+
 \begin{document}
-\maketitle
+\begin{frame}
+	\maketitle
+\end{frame}
+
+\section{Introduction}
 \begin{frame}{Overview}
     \tableofcontents
 \end{frame}
@@ -193,7 +197,11 @@
 
 
 \begin{frame}{Summary}
-	%TODO
+	\begin{itemize}
+		\item lz4 beats lzo due to higher decompression speed
+		\item bzip wins if compression ratio is most important
+		\item zstd is a good compromise if only one algorithm can be chosen
+	\end{itemize}
 \end{frame}
 
 \end{document}
