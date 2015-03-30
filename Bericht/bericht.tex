@@ -298,7 +298,27 @@ while
 	\)
 \end{center}
 If we also want to adress decompression we can extend every vector with a third value for decompression speed.
-
+Table \ref{tab:metric} shows the results of the applied metric.
+There are five interesting use cases:
+\begin{itemize}
+	\item Compression speed and Decompression speed with higher weighting values than Compression Ratio.
+	We chose this to represent live systems.  
+	In live systems you have real time requirements, so every time overhead has to be minimized. 
+	\\
+	\item Decompression speed with a higher weighting value than compression speed and ratio.
+	We chose this to represent the write once, read multiple times case, the most common one in standard computing.
+	\item All three values with equal weighting.
+	This is a more theoretical case to get an estimate how we value the algorithms without weighting.
+	\\
+	\item Compression speed with a stronger weighting than the other two.
+	This shows a case where we want to write something and are not sure if we want to read it.
+	\\
+	\item Compression ratio with a stronger weighting value than compression speed and decompression speed.
+	This is the archive case where real time components are not important as used storage.
+	So we need to minimize the used storage, we can achieve this with high compression ratios.
+\end{itemize}
+\input{data_files/metric.tex}
+\FloatBarrier
 	
 \chapter{Discussion}
 \label{Discussion}
