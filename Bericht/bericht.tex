@@ -107,26 +107,26 @@
 \chapter{Introduction}
 \label{Introduction}
 %TODO ausbaubar
-Since and even before the start of the days of modern computers compression is of a certain importance. 
-One example for compression before modern computers are commercial codes for telegraphing.
-\\
-The use case in these days was to minimize the package size for network communication.
-Many possible utilizations for compression have been discovered since then.
-Among others fast, light compression for running systems and slower compression with higher compression ratios for long term storing. 
-\\
-Especially but not only in High Performance Computing (HPC) we see an emerging gap between the possibilities to create data and the ability to store it in an appropriate way. 
-The gap is based on the reducing difference between computing speed and storage capacity\mcite{ExaStoSy}.
-This effect can be observed when looking at new generations of supercomputers. 
-In the case of the dkrz the storage capacity may only increase by a factor of three while computing performance is expected to grow by a factor of twenty\mcite{ExaStoSy}.
-Compression can not solve this problem, but it can reduce the impact of the gap. 
-\\
-However, compression is a superordinate concept.
-There are many possible ways (algorithms) to achieve compression.
-The arising question is for which use case which way is the adequate one.
-There is an uncountable number of different ways to compress.
-This means the optimal solution to this problem is not detectable.
-But it is possible to get an approximation through testing as many algortihms as possible an comparing the results.
-That is the main point of this analysis of compression algorithms in the HPC field.
+
+Since and even before the start of the days of modern computers compression is of a certain importance.
+
+Before computers as we know them today became ubiqitous, compression could be found (among others) in commercial codes for telegraphing, or even in the still-in-use morse code.
+
+The main reason to use a form of compression in these systems was to reduce the time it took to send a certain message. This reason carries on into the modern age in the form of compressed network communications; many other applications for compression have been discovered since then.
+
+Among others, fast compression algorithms are used to transparently reduce the load and amount of data in live, in-use file systems. Slower algorithms might be utilized for significant reduction in data size, and thus disk usage, in long-term storage systems.
+
+With modern computers in general, and especially in High Performance Computing (HPC) we see an emerging gap between the speed at which data can be computed and the speed at which it can be stored it in an appropriate way. 
+This gap stems from the growing difference between computing speed and storage capacity\mcite{ExaStoSy}.
+
+The effect can be observed when looking at new generations of supercomputers: 
+In the case of the DKRZ, projections see storage capacity increase only by a factor of three while computing performance is expected to grow by a factor of twenty\mcite{ExaStoSy}.
+
+Compression can not solve this problem, but it can help to mitigate the impact of the disproportionate growth of computing speed vs. storage speed, and thus reduce the significance of the gap. 
+
+However, compression is a big field. There are many algorithms to achieve compression, each with it's own set of performance characteristics. To apply compression in a beneficial manner, one has to carefully choose an appropriate algorithm, or even multiple algorithms, for the use case at hand.
+
+This leads us to the main purpose of this project: To find, through testing possible candidates in simulations of typical situations in HPC, the best algorithms to be used in high-speed computing and storage systems.
 
 
 \chapter{Assignment and Methodology}
