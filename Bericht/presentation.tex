@@ -58,7 +58,7 @@
     \end{itemize}
     \vspace{1em}
     Since the tool perfectly fits our usecase we decided to use it.
-    The project can be found here:    
+    The project can be found here:
     \url{https://chiselapp.com/user/Justin_be_my_guide/repository/fsbench}
 \end{frame}
 \begin{frame}{How does our benchmark script work?}
@@ -67,7 +67,7 @@
         \item scans directory structure
         \item launches fsbench distributed on each core
         \item saves the results in a sqlite3 database
-    \end{itemize}    
+    \end{itemize}
 \end{frame}
 
 \begin{frame}{How does our plotting script work?}
@@ -76,12 +76,12 @@
         \item reads results from database
         \item filters according to given command-line options
         \item prints results in a pretty graph using matplotlib
-        \item prints base data as a latex 
-    \end{itemize}    
+        \item prints base data as a latex
+    \end{itemize}
 \end{frame}
 
 \begin{frame}{Problems}
-    \begin{itemize}  
+    \begin{itemize}
         \item implementation details
         \item python 2 vs 3.2 vs 3.4
         \item fsbench memory usage
@@ -118,7 +118,7 @@
      ZSTD             &  0.2547 & 0.309  & 0.2938 & 0.239  & 0.428 \\
     \hline
     \end{tabular}
-    } 
+    }
     \caption{Metric, Ratio : Compression speed : Decompression Speed}
     \label{tab:metric}
     \end{center}
@@ -164,10 +164,10 @@
 \begin{frame}{Blocksize}
     \begin{itemize}
         \item useful information for parallelizing
-        \item we had a look at different block sizes 
+        \item we had a look at different block sizes
         \item very little influence
     \end{itemize}
-    \vspace{-0.9em}
+    \vspace{-0.8em}
     \begin{figure}[h]
         \begin{center}
             \scalebox{0.42}{\input{plots/blocksize_1.pgf}}
