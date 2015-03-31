@@ -218,8 +218,8 @@ This does not influence our results in a meaningful way, since we compress the d
 All benchmarks were run on a machine with the following specifications:
 
 \begin{itemize}
-\item 2 Intel Xeon X5560 mit je \(4 * 2.8\text{GHz}\)
-\item 12GB RAMs
+\item 2 Intel Xeon X5560 with \(4 * 2.8\text{GHz}\) each
+\item 12GB RAM
 \end{itemize}
 
 \section{Data Sources}
@@ -444,7 +444,7 @@ There are five interesting use cases:
 	\item Decompression speed with a higher weighting value than compression speed and ratio.
 	We chose this to represent the write once, read multiple times case, the most common one in standard computing.
 	\item All three values with equal weighting.
-	This is a more theoretical case to get an estimate how we value the algorithms without weighting.
+	This is a more theoretical case to get an estimate how at how our approach weights algorithms by default.
 	\\
 	\item Compression speed with a stronger weighting than the other two.
 	This shows a case where we want to write something and are not sure if we want to read it.
