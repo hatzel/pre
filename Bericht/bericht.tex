@@ -79,10 +79,10 @@
 		Vorgelegt von: & Lukas Stabe \\
 			& Hans Ole Hatzel \\
 			& Arne Struck \\
-		E-Mail-Adresse: 
-			& \href{mailto:2stabe@informatik.uni-hamburg.de} {2stabe@informatik.uni-hamburg.de} \\			
+		E-Mail-Adresse:
+			& \href{mailto:2stabe@informatik.uni-hamburg.de} {2stabe@informatik.uni-hamburg.de} \\
 			& \href{mailto:2hatzel@informatik.uni-hamburg.de}{2hatzel@informatik.uni-hamburg.de} \\
-			& \href{mailto:1struck@informatik.uni-hamburg.de}{1struck@informatik.uni-hamburg.de} \\ 
+			& \href{mailto:1struck@informatik.uni-hamburg.de}{1struck@informatik.uni-hamburg.de} \\
 		%Matrikelnummer: & 1234567 \\
 		Studiengang: & Informatik \\
 		\\
@@ -100,7 +100,7 @@ Overall we see that, while a lot of scientific data already has compression buil
 Depending on whether speed or compression ratio are more important in a specific case, we recommend different compression algorithms.
 \thispagestyle{empty}
 
-   
+
 
 \tableofcontents
 
@@ -116,13 +116,13 @@ The main reason to use a form of compression in these systems was to reduce the 
 
 Among others, fast compression algorithms are used to transparently reduce the load and amount of data in live, in-use file systems. Slower algorithms might be utilized for significant reduction in data size, and thus disk usage, in long-term storage systems.
 
-With modern computers in general, and especially in High Performance Computing (HPC) we see an emerging gap between the speed at which data can be computed and the speed at which it can be stored it in an appropriate way. 
+With modern computers in general, and especially in High Performance Computing (HPC) we see an emerging gap between the speed at which data can be computed and the speed at which it can be stored it in an appropriate way.
 This gap stems from the growing difference between computing speed and storage capacity\cite{ExaStoSy}.
 
-The effect can be observed when looking at new generations of supercomputers: 
+The effect can be observed when looking at new generations of supercomputers:
 In the case of the DKRZ, projections see storage capacity increase only by a factor of three while computing performance is expected to grow by a factor of twenty in the next ten years\cite{ExaStoSy}.
 
-Compression can not solve this problem, but it can help to mitigate the impact of the disproportionate growth of computing speed vs. storage speed, and thus reduce the significance of the gap. 
+Compression can not solve this problem, but it can help to mitigate the impact of the disproportionate growth of computing speed vs. storage speed, and thus reduce the significance of the gap.
 
 However, compression is a big field. There are many algorithms to achieve compression, each with it's own set of performance characteristics. To apply compression in a beneficial manner, one has to carefully choose an appropriate algorithm, or even multiple algorithms, for the use case at hand.
 
@@ -184,7 +184,7 @@ Each fsbench instance is provided the file and the list of compression algorithm
 
 After an instance has finished benchmarking a file, the main process will retrieve the results and write them into a sqlite database.
 
-Additionally, we provide a second script to help visualize and format the results. 
+Additionally, we provide a second script to help visualize and format the results.
 This uses the library matplotlib that provides a rich interface for displaying diagrams, graphs and the like.
 
 We also implemented a function to generate \LaTeX tables to get the results into this report in an automated fashion.
@@ -224,21 +224,21 @@ All benchmarks were run on a machine with the following specifications:
 
 \section{Data Sources}
 The examined data sets come from 5 sources and contain different kinds of information.
-The first source is the KASCADE Cosmic Ray Data Centre (KCDC)\footnote{\url{https://kcdc.ikp.kit.edu/}} of the Karlsruhe Institute of Technology which provides data about cosmic rays. 
-The data is stored as text in ASCII encoding. 
+The first source is the KASCADE Cosmic Ray Data Centre (KCDC)\footnote{\url{https://kcdc.ikp.kit.edu/}} of the Karlsruhe Institute of Technology which provides data about cosmic rays.
+The data is stored as text in ASCII encoding.
 It's a table represented with space delimited numbers. Only small parts of the ASCII range are actually used for most of the file. Only at the beginning of the file there are headlines for each column, consisting of text, the rest of the files consists of mostly numbers.
 Therefore the file is expected to be very compressible.
 \\
 
-The second source provides climatic data and is the Cera database from the DKRZ\footnote{\url{http://cera-www.dkrz.de/CERA/}}. 
+The second source provides climatic data and is the Cera database from the DKRZ\footnote{\url{http://cera-www.dkrz.de/CERA/}}.
 It is stored as in the NetCDF format.
 NetCDF is a binary format for storing array-like data that contains meta data describing the stored data.
 %TODO what about internal compression of netcdf
 \cite{NetCDF}
 \\
 
-The third set of data sets is provided by the National Climatic Data Center (NCDC) and their global forecast system\footnote{\url{http://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs}}. 
-We used data weather data provided in the grb2 format with inv files for metadata. 
+The third set of data sets is provided by the National Climatic Data Center (NCDC) and their global forecast system\footnote{\url{http://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs}}.
+We used data weather data provided in the grb2 format with inv files for metadata.
 \\
 
 The fourth source is the CERN\footnote{\url{http://opendata.cern.ch/}} which provides data from the Large Hadron Collider (LHC) in the root format (for their data analysis software).
@@ -253,21 +253,21 @@ Our final data set is the Silesia compression Corpus\footnote{\url{http://sun.ae
 \section*{Block sizes}
 Compression algorithms in HPC would ideally work in parallel as otherwise resources of HPC-systems are not used to their full extend.
 A common approach for achieving parallelism in compression is by splitting up the data and compressing each the blocks individually on a different core or node\cite{BenComp}. \\
-While we won't explore the implementations for splitting up the data and distributing it we can access the performance of different algorithms on smaller blocks of data to simulate their usage in parallel implementations. 
-By default our tools test with a block size of 1.7 GB, meaning that the implementation of each algorithm gets 1.7GB of data at a time. 
+While we won't explore the implementations for splitting up the data and distributing it we can access the performance of different algorithms on smaller blocks of data to simulate their usage in parallel implementations.
+By default our tools test with a block size of 1.7 GB, meaning that the implementation of each algorithm gets 1.7GB of data at a time.
 Some algorithms may split up this data on their own, meaning a smaller block size might not have any effect.
 To simulate realistic splitting of these files for multiprocessing we decided to go with block sizes of 500MB, 100MB, 10MB, 1MB, and 0.1MB.
 
 \input{data_files/blocksizes.tex}
-This data clearly show that the block sizes do not have a large impact on the performance of compression algorithms. 
+This data clearly show that the block sizes do not have a large impact on the performance of compression algorithms.
 In general a trend of less but faster compression for smaller block sizes can be observed.
-This can be attributed to the fact that the algorithms have a smaller 'backlog' of data to look for possible compression and therefore operate faster\cite{ResComp}. 
+This can be attributed to the fact that the algorithms have a smaller 'backlog' of data to look for possible compression and therefore operate faster\cite{ResComp}.
 Lowering the block size may actually have a positive impact on performance and not affect compression ratio.
 
 For block sizes down to 1MB compression ratio isn't noticeably affected.
 While in general performance goes up with lower block size 500MB seems to be the only out lier.
 We presume that this is due to the added overhead of launching multiple iterations and due to the algorithms splitting up data internally as well, meaning the step from 1.7 GB down to 500MB might not actually affect them.
-The data does however show that even for 0.1MB the impact on compression ratio is minimal (below $10\%$). 
+The data does however show that even for 0.1MB the impact on compression ratio is minimal (below $10\%$).
 Therefore in general our algorithms seem to be viable for parallel compression as well.
 
 \FloatBarrier
@@ -277,7 +277,7 @@ Therefore in general our algorithms seem to be viable for parallel compression a
 \subsection{Silesia Corpus}
 The first approach is to test algorithms on the Silesia Corpus to decide which algorithms will be looked at in more detail.
 \\
-Testing on the Silesia Compression Corpus leads to the results in figure \ref{fig:sc_res}. 
+Testing on the Silesia Compression Corpus leads to the results in figure \ref{fig:sc_res}.
 The corresponding values are shown in table \ref{tab:sc_res}. \\
 
 
@@ -339,12 +339,12 @@ The GRIB2 files appear to also be compressed. GRIB2 does support file format spe
 
 
 % cern
-\FloatBarrier 
+\FloatBarrier
 \subsection{CERN}
 
 \input{data_files/cern.tex}
 
-The .root file format is already compressed an therefore none of our algorithms can achieve any meaningful compression. More interesting is the fact that some of the algorithms are able to finish very quickly with a compression ratio of $1.0$. 
+The .root file format is already compressed an therefore none of our algorithms can achieve any meaningful compression. More interesting is the fact that some of the algorithms are able to finish very quickly with a compression ratio of $1.0$.
 Meaning that these algorithms have built in detections for when a file won't compress well and can react accordingly.
 \FloatBarrier
 
@@ -416,10 +416,10 @@ This results in (\(v(x)\) returns entry x in the tuple \(v\)):
 	\)
 \end{center}
 
-Since the Data consists of only positive components we can interpret the tuple as a vector and use the length of the normalized vectors as metric. 
+Since the Data consists of only positive components we can interpret the tuple as a vector and use the length of the normalized vectors as metric.
 Positive in this case connotes the greater the value the more efficient the algorithm.
-At last we need to add the ability to weight the results. 
-To achieve this we add a weighting vector whose elements will sum up to one and will be added as factors in the metric. 
+At last we need to add the ability to weight the results.
+To achieve this we add a weighting vector whose elements will sum up to one and will be added as factors in the metric.
 This stretches the unit circle to desired relations between compression speed and ratio.
 For the normalized result vector \(V = (\text{compression ratio}, \text{speed})\) and the weighting vector \(W = (\text{compression ratio weighting}, \text{speed weighting})\) this can be expressed as:
 \begin{center}
@@ -438,8 +438,8 @@ Table \ref{tab:metric} shows the results of the applied metric.
 There are five interesting use cases:
 \begin{itemize}
 	\item Compression speed and Decompression speed with higher weighting values than Compression Ratio.
-	We chose this to represent live systems.  
-	In live systems you have real time requirements, so every time overhead has to be minimized. 
+	We chose this to represent live systems.
+	In live systems you have real time requirements, so every time overhead has to be minimized.
 	\\
 	\item Decompression speed with a higher weighting value than compression speed and ratio.
 	We chose this to represent the write once, read multiple times case, the most common one in standard computing.
@@ -456,7 +456,7 @@ There are five interesting use cases:
 \input{data_files/metric.tex}
 
 \FloatBarrier
-	
+
 \chapter{Discussion}
 \label{Discussion}
 Overall it is clear that some algorithms will be far more usable for live file system compression while others are more viable for long term compression where a high compression ratio is most important.
@@ -468,8 +468,8 @@ Furthermore we can derive from table \ref{tab:metric} that bzip2 is the best alg
 \\
 In addition live file systems compression speeds should be on par with disks speeds to ensure the system can run at full speed.
 lz4 and lzo both meet these requirements.
-For archival one has to make the trade-off of memory and computing power. 
-Depending on how both factors are valued one might come to the conclusion that bzip is in fact the best algorithm. 
+For archival one has to make the trade-off of memory and computing power.
+Depending on how both factors are valued one might come to the conclusion that bzip is in fact the best algorithm.
 This supports the findings so far.
 On the other hand other papers have found lz4 to have the better trade-off even for long term archival\cite{PPerfHPC}.
 \\
@@ -486,9 +486,9 @@ Additionally we observe a ratio of 4 for algorithm bzip, the candidate for archi
 All in all if it is possible to double the storage capacity on the live system and to increase the storage capacity of the archive system by a factor of 4 you can state that compression is valid in the HPC field from the storage point of view.
 \\ \\
 \newpage
-Compression should ideally not impact the performance of the system. 
+Compression should ideally not impact the performance of the system.
 For read write operations this is mostly the case if compression speeds keep up with storage speeds.
-Our results find lz4 to have an average compression speed of 514MB/s meaning that to keep up with a storage speed of modern clusters, see table \ref{tab:storage_speeds}, one would need 800 of our machines cores. 
+Our results find lz4 to have an average compression speed of 514MB/s meaning that to keep up with a storage speed of modern clusters, see table \ref{tab:storage_speeds}, one would need 800 of our machines cores.
 \begin{table}[h]
 \begin{center}
 \begin{tabular}{|l|r|}
@@ -517,8 +517,8 @@ Therefore the composition has to be analyzed and the used algorithms need the ab
 \\
 Bzip2 and zlib lack this ability and therefore can only be considered appropriate if time is a very unimportant factor in the assessment of a given system.
 \\
-If time is a valuable resource you can derive from the results in table \ref{tab:metric} that lzo and lz4 are appropriate for the compression task. 
-But if decompression speed is also considered, lz4 is the recommended algorithm. 
+If time is a valuable resource you can derive from the results in table \ref{tab:metric} that lzo and lz4 are appropriate for the compression task.
+But if decompression speed is also considered, lz4 is the recommended algorithm.
 In most cases data will be decompressed more often than it will be compressed making decompression speed the more important factor.
 It is however possible to envision a system where decompression speed is not essential for example an archival system where most files are not expected to be read again.
 
