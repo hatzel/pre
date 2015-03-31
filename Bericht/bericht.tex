@@ -108,7 +108,7 @@ Depending on whether speed or compression ratio are more important in a specific
 \label{Introduction}
 %TODO ausbaubar
 
-Since and even before the start of the days of modern computers compression is of a certain importance.
+Even before the days of modern computers compression was of a certain importance.
 
 Before computers as we know them today became ubiquitous, compression could be found (among others) in commercial codes for telegraphing\cite{com}, or even in the still-in-use Morse code.
 
@@ -120,11 +120,11 @@ With modern computers in general, and especially in High Performance Computing (
 This gap stems from the growing difference between computing speed and storage capacity\cite{ExaStoSy}.
 
 The effect can be observed when looking at new generations of supercomputers: 
-In the case of the DKRZ, projections see storage capacity increase only by a factor of three while computing performance is expected to grow by a factor of twenty\cite{ExaStoSy}.
+In the case of the DKRZ, projections see storage capacity increase only by a factor of three while computing performance is expected to grow by a factor of twenty in the next ten years\cite{ExaStoSy}.
 
 Compression can not solve this problem, but it can help to mitigate the impact of the disproportionate growth of computing speed vs. storage speed, and thus reduce the significance of the gap. 
 
-However, compression is a large field. There are many algorithms to achieve compression, each with it's own set of performance characteristics. To apply compression in a beneficial manner, one has to carefully choose an appropriate algorithm, or even multiple algorithms, for the use case at hand.
+However, compression is a big field. There are many algorithms to achieve compression, each with it's own set of performance characteristics. To apply compression in a beneficial manner, one has to carefully choose an appropriate algorithm, or even multiple algorithms, for the use case at hand.
 
 This leads us to the main purpose of this project: To find, through testing possible candidates in simulations of typical situations in HPC, the best algorithms to be used in high-speed computing and storage systems.
 
@@ -177,12 +177,12 @@ This is where our script comes in. We provide a simple-to-use interface to test 
 
 Our script aims to speed up the benchmarking process by launching multiple instances of fsbench on the different processing cores available in the system.
 For this we decided to use the python process pool implementation as it provides a simple way to split up the workload.
-Our multiprocessing model therefore just works by enqueuing all files that are to be benchmarked (represented by there filenames) into a queue.
-Each of the worker process will benchmark the compression of this file as soon at it is done with the previous task by starting an fsbench instance.
+Our multiprocessing model therefore just works by enqueuing all files that are to be benchmarked (represented by their filenames) into a queue.
+Each of the worker processes will benchmark the compression of this file as soon at it is done with the previous task by starting an fsbench instance.
 
 Each fsbench instance is provided the file and the list of compression algorithms to test (given as command line arguments to our script). The instance is also instructed to output test run results in the machine-readable csv format.
 
-After each finished instance of the benchmarks, meaning one run of fsbench, the main process will retrieve the results and write them into a sqlite database.
+After an instance has finished benchmarking a file, the main process will retrieve the results and write them into a sqlite database.
 
 Additionally, we provide a second script to help visualize and format the results. 
 This uses the library matplotlib that provides a rich interface for displaying diagrams, graphs and the like.
@@ -468,10 +468,10 @@ Furthermore we can derive from table \ref{tab:metric} that bzip2 is the best alg
 \\
 In addition live file systems compression speeds should be on par with disks speeds to ensure the system can run at full speed.
 lz4 and lzo both meet these requirements.
-For archival one has to make the trade off of memory and computing power. 
+For archival one has to make the trade-off of memory and computing power. 
 Depending on how both factors are valued one might come to the conclusion that bzip is in fact the best algorithm. 
 This supports the findings so far.
-On the other hand other papers have found lz4 to have the better trade off even for long term archival\cite{PPerfHPC}.
+On the other hand other papers have found lz4 to have the better trade-off even for long term archival\cite{PPerfHPC}.
 \\
 One arising questions is if our metric is a suitable one, since it does not value the trade-off zstd makes with neutral input in column 3.
 But zstd is not outstanding in its measurements.
