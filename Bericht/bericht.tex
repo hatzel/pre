@@ -171,7 +171,7 @@ This chapter will first describe the initial design of the tools we developed. I
 
 We planned to implement a script that would compress and decompress sets of data files, and gather statistics about the test runs.
 
-To do this, our script utilizes fsbench. Fsbench is a free open source tool implemented in C++ that is able to test a set of compression algorithms against a file. It is, however, not capable of batch processing multiple files.
+To do this, our script utilizes fsbench.  Fsbench\footnote{\url{https://chiselapp.com/user/Justin_be_my_guide/repository/fsbench/}} is a free open source tool implemented in C++ that is able to test a set of compression algorithms against a file. It is, however, not capable of batch processing multiple files.
 
 This is where our script comes in. We provide a simple-to-use interface to test entire directory structures and store the resulting data in an easily processable format. We decided to go with sqlite as a data store since it combines the simplicity of having just one database file with the performance and usage benefits that are typical for relational databases.
 
