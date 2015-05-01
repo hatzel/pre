@@ -262,7 +262,7 @@ A common approach for achieving parallelism in compression is by splitting up th
 While we won't explore the implementations for splitting up the data and distributing it we can access the performance of different algorithms on smaller blocks of data to simulate their usage in parallel implementations.
 By default our tools test with a block size of 1.7 GB, meaning that the implementation of each algorithm gets 1.7GB of data at a time.
 Some algorithms may split up this data on their own, meaning a smaller block size might not have any effect.
-To simulate realistic splitting of these files for multiprocessing we decided to go with block sizes of 500MB, 100MB, 10MB, 1MB, and 0.1MB.
+To simulate realistic splitting of these files for multiprocessing we decided to go with block sizes of 500MB, 100MB, 10MB, 1MB, 0.1MB, 0.05MB and 0.025MB.
 
 \input{data_files/blocksizes.tex}
 This data clearly show that the block sizes do not have a large impact on the performance of compression algorithms.
