@@ -262,7 +262,7 @@ A common approach for achieving parallelism in compression is by splitting up th
 While we won't explore the implementations for splitting up the data and distributing it we can access the performance of different algorithms on smaller blocks of data to simulate their usage in parallel implementations.
 By default our tools test with a block size of 1.7 GB, meaning that the implementation of each algorithm gets 1.7GB of data at a time.
 Some algorithms may split up this data on their own, meaning a smaller block size might not have any effect.
-To simulate realistic splitting of these files for multiprocessing we decided to go with block sizes of 500MB, 100MB, 10MB, 1MB, and 0.1MB.
+To simulate realistic splitting of these files for multiprocessing we decided to go with block sizes of 500MB, 100MB, 10MB, 1MB, 0.1MB, 0.05MB and 0.025MB.
 
 \input{data_files/blocksizes.tex}
 This data clearly show that the block sizes do not have a large impact on the performance of compression algorithms.
@@ -271,9 +271,10 @@ This can be attributed to the fact that the algorithms have a smaller 'backlog' 
 Lowering the block size may actually have a positive impact on performance and not affect compression ratio.
 
 For block sizes down to 1MB compression ratio isn't noticeably affected.
-While in general performance goes up with lower block size 500MB seems to be the only out lier.
+While in general performance goes up with lower block size 0.05MB seems to perform better than 0.025MB and reach a better compression ration tham 0.1MB.
+We are not sure what tleads to this result. Possible factors could include the test data and implementation details (especially window sizes) of the compression algorithms.
 We presume that this is due to the added overhead of launching multiple iterations and due to the algorithms splitting up data internally as well, meaning the step from 1.7 GB down to 500MB might not actually affect them.
-The data does however show that even for 0.1MB the impact on compression ratio is minimal (below $10\%$).
+The data does however show that even for 0.1MB the impact on compression ratio is minimal (just above $10\%$).
 Therefore in general our algorithms seem to be viable for parallel compression as well.
 
 \subsection{Silesia Corpus}

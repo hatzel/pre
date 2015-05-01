@@ -941,28 +941,28 @@
 \pgftext[x=0.556885in,y=3.000000in,,bottom,rotate=90.000000]{\sffamily\fontsize{12.000000}{14.400000}\selectfont Compression speed MByte/s}%
 \end{pgfscope}%
 \begin{pgfscope}%
-\pgftext[x=2.107401in,y=4.235093in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 0.024999999999999998}%
+\pgftext[x=2.107401in,y=4.235093in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 0.025}%
 \end{pgfscope}%
 \begin{pgfscope}%
-\pgftext[x=3.956324in,y=4.892368in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 0.049999999999999996}%
+\pgftext[x=3.956324in,y=4.892368in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 0.05}%
 \end{pgfscope}%
 \begin{pgfscope}%
-\pgftext[x=1.774974in,y=4.620728in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 0.09999999999999999}%
+\pgftext[x=1.774974in,y=4.620728in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 0.1}%
 \end{pgfscope}%
 \begin{pgfscope}%
-\pgftext[x=6.016033in,y=2.031443in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 1.0}%
+\pgftext[x=6.066033in,y=2.031443in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 1}%
 \end{pgfscope}%
 \begin{pgfscope}%
-\pgftext[x=6.264981in,y=2.216864in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 10.0}%
+\pgftext[x=6.314981in,y=2.216864in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 10}%
 \end{pgfscope}%
 \begin{pgfscope}%
-\pgftext[x=6.280350in,y=1.735786in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 100.0}%
+\pgftext[x=6.500350in,y=1.555786in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 100}%
 \end{pgfscope}%
 \begin{pgfscope}%
-\pgftext[x=6.280389in,y=1.395049in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 500.0}%
+\pgftext[x=6.500389in,y=1.215049in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 500}%
 \end{pgfscope}%
 \begin{pgfscope}%
-\pgftext[x=6.280457in,y=1.588730in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 1717.9869179999998}%
+\pgftext[x=6.000457in,y=1.398730in,left,base]{\sffamily\fontsize{12.000000}{14.400000}\selectfont 1718}%
 \end{pgfscope}%
 \end{pgfpicture}%
 \makeatother%
