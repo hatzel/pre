@@ -491,6 +491,9 @@ Both Lempel-Ziv algorithms show fast compression and decompression speeds while 
 Surprisingly the compression speeds of bzip2 and zlib are similar, though bzip2 goes through more steps to compress data.
 This can be attributed to the multiple passes of Huffman coding.
 The observed decoding speeds of the both algorithms back these assumptions up.
+As expected zstd did not perform badly.
+The performance is better than the performance of the algorithms using Huffman Coding.
+Zstd pulls of an interesting trade-off and might be able to improve in the future.
 
 Overall it is clear that some algorithms will be far more usable for live file system compression while others are more viable for long term compression where a high compression ratio is most important.
 There are two general use cases, one being the compression of live file systems and the other being compression for archival.
