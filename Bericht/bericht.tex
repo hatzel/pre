@@ -271,9 +271,10 @@ This can be attributed to the fact that the algorithms have a smaller 'backlog' 
 Lowering the block size may actually have a positive impact on performance and not affect compression ratio.
 
 For block sizes down to 1MB compression ratio isn't noticeably affected.
-While in general performance goes up with lower block size 500MB seems to be the only out lier.
+While in general performance goes up with lower block size 0.05MB seems to perform better than 0.025MB and reach a better compression ration tham 0.1MB.
+We are not sure what tleads to this result. Possible factors could include the test data and implementation details (especially window sizes) of the compression algorithms.
 We presume that this is due to the added overhead of launching multiple iterations and due to the algorithms splitting up data internally as well, meaning the step from 1.7 GB down to 500MB might not actually affect them.
-The data does however show that even for 0.1MB the impact on compression ratio is minimal (below $10\%$).
+The data does however show that even for 0.1MB the impact on compression ratio is minimal (just above $10\%$).
 Therefore in general our algorithms seem to be viable for parallel compression as well.
 
 \subsection{Silesia Corpus}
