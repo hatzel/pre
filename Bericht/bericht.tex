@@ -248,7 +248,6 @@ ROOT files aim to be very compressed binary files. Therefore little compression 
 
 Our final data set is the Silesia compression Corpus\footnote{\url{http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia}}, a standard data set for testing lossless compression algorithms, therefor it contains a multitude of data and formats. We used this to gain an initial impression of the algorithms and which aspects they excel in. While this dataset aims to be as diverse as possible, some of the datasets are also typical for HPC.
 \\
-
 \newpage
 
 \FloatBarrier
@@ -292,7 +291,34 @@ The graph looks at compression speed and compression ratio. A point to the top t
 For the other extreme of the speed compression ratio trade-off we decided to go with bzip2. Both 7z-deflate variants are slower than bzip2 on the given dataset therefore we decided to go with zlib as well as an algorithm a little more balanced towards the speed aspect.
 
 
+\subsection{The Algorithms}
+\label{algorithms}
+\subsubsection{Lempel-Ziv (LZ4 and LZO)}
+lz4 and lzo are both based on the lz77 algorithm, the differences are mostly in the variability and implementation of the algorithms and might be limited.
+Both use a slinding window consisting of a dictionary or a search buffer and a look-ahead buffer. 
+The sliding window will essentially replace reoccuring sequences with backrefences to their last occourance.
+The optimum way would also prefer the longest found match.
+As a result these algorithms work by iterating once over the data. 
+The sliding window also reduces the impact of the filesize on compression performance.
+Since only one pass over the data is needed both compression and decompression should be fast. 
+We expect compression to be slower than decompression since the search for matches in the current sliding window is expected to be resource intensive and the decompression can be done as a look-up.
 
+
+\subsubsection{BZIP2}
+In contrast bzip2 works with big compression stack resulting in multiple iterations over the data. 
+The stack contains huffman codes, move-to-front transformation, Burrows–Wheeler transform and Delta encoding. 
+Some of those are applied mutliple times. 
+As a result bzip2 is expected to have very long runtimes.
+The suspected upside however are great compression ratios since multiple passes might be able to find additional redundancy in the data.
+
+
+\subsubsection{ZSTD}
+%TODO
+
+\subsubsection{zlib}
+Zlib is based on the DEFLATE algorithm which uses a combination of lz77 for duplicate literal elimination and Huffman coding for reduction of the lz77 output.
+We expect zlib having a higher compression ratio than the two Lempel-Ziv-Variations since it contains a mechanic to reduce the used space.
+Huffman coding can potentially be slow when comparing multiple Huffman codes against each other, therefore we expect a potential slow compression speed but decompression speed should not be effected as much.
 
 
 
@@ -331,7 +357,6 @@ The possible compression ratio would be a lot lower if the data was actually sto
 \subsection{NCDC}
 
 \input{data_files/ncdc.tex}
-%TODO Text something to kcdc
 We expected the compression algorithms to at least give us some compression.
 However the compression ratio even for the slower algorithms is barely above $1.0$
 The GRIB2 files appear to also be compressed. GRIB2 does support file format specific compression \cite{GRIMP}.
@@ -461,6 +486,15 @@ There are five interesting use cases:
 
 \chapter{Discussion}
 \label{Discussion}
+Our findings support the assumptions we made in \ref{algorithms}. 
+Both Lempel-Ziv algorithms show fast compression and decompression speeds while they have a rather small compression ratio while bzip2 and zlib have higher compression ratios but slow compression and decompression speeds. 
+Surprisingly the compression speeds of bzip2 and zlib are similar, though bzip2 consits of far more compression layers.
+This can be attributed to multiple Huffman coding.
+The observed decoding speeds of the both algorithms back  these assumptions up.
+
+
+%TODO zstd
+
 Overall it is clear that some algorithms will be far more usable for live file system compression while others are more viable for long term compression where a high compression ratio is most important.
 There are two general use cases, one being the compression of live file systems and the other being compression for archival.
 \\
@@ -509,6 +543,8 @@ Our results find lz4 to have an average compression speed of 514MB/s meaning tha
 This is by no means an impossible task as our results were measured on an older machine and a cluster has a lot of nodes at its disposal. But it means that in order to achieve a the same with bzip2 one would need around $50000$ of our cores.
 %TODO what are read/write speed on clusters
 \\
+
+
 
 
 \chapter{Conclusion}
