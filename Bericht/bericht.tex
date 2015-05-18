@@ -204,6 +204,9 @@ To speed the queries up, we introduced an sqlite index covering the filename and
 
 Another issue we encountered relatively late was fsbench report misleading data. If fsbench recognizes a file cannot be compressed (meaning the compression ratio being barely above or equal to 1) it won't actually benchmark decompression but instead report a very large number for decompression speed (this might be the time required to copy the memory contents from the input buffer to the output buffer). We only noticed this since our averages were raising to absurd values. This issue was fixed by simply discarding results with a compression ratio of 1 when calculating decompression speed.
 
+The code can be found at \url{https://github.com/hatzel/benchy}. 
+Information about the usage of the two scripts can be accessed with the \texttt{-h} parameter.
+
 \section{Drawbacks}
 
 One major drawback of our approach is that fsbench does the whole benchmark for one file in one piece and in memory. While this makes it easy for fsbench to provide unbiased results (no need to stop the measurement, copy new data into the memory and start the measurement again), it also means that we can not currently do benchmarks for files with a size greater than about \(\frac{1}{3}\) of the memory available to the system.
@@ -572,22 +575,5 @@ It is however possible to envision a system where decompression speed is not ess
 
 \listoftables
 
-\newpage
 
-\thispagestyle{empty}
-
-\chapter*{}
-
-%TODO needed?
-\section*{Erklärung}
-
-Wir versichern, dass wir die Arbeit selbstständig verfasst, die Arbeiten am Projekt selbstständig durchgeführt und keine anderen, als die angegebenen Hilfsmittel -- insbesondere keine im Quellenverzeichnis nicht benannten Internetquellen -- benutzt haben, die Arbeit vorher nicht in einem anderen Prüfungsverfahren eingereicht haben.
-
-\smallskip
-
-%Hamburg, den 29.03.2015  \quad \dotfill \\ \\
-
-\bigskip
-\bigskip
-\bigskip
 \end{document}
