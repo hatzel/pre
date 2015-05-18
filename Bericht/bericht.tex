@@ -33,6 +33,8 @@
 \usepackage{pgf}
 \usepackage{amsmath}
 \usepackage{placeins}
+\usepackage{dirtree,array}
+\usepackage{booktabs}
 
 \lstset{
 	basicstyle=\ttfamily,
@@ -51,6 +53,7 @@
 \renewcommand*{\appendixname}{Appendix}
 \renewcommand*{\appendixtocname}{Appendices}
 \renewcommand*{\appendixpagename}{Appendices}
+\renewcommand{\DTstyle}{\textrm}
 
 
 \begin{document}
@@ -204,9 +207,10 @@ To speed the queries up, we introduced an sqlite index covering the filename and
 
 Another issue we encountered relatively late was fsbench report misleading data. If fsbench recognizes a file cannot be compressed (meaning the compression ratio being barely above or equal to 1) it won't actually benchmark decompression but instead report a very large number for decompression speed (this might be the time required to copy the memory contents from the input buffer to the output buffer). We only noticed this since our averages were raising to absurd values. This issue was fixed by simply discarding results with a compression ratio of 1 when calculating decompression speed.
 
-The code can be found at \url{https://github.com/hatzel/benchy}. 
-Information about the usage of the two scripts can be accessed with the \texttt{-h} parameter.
+The two scripts can be found at \url{https://github.com/hatzel/benchy}.
+Documentation and 'how to' can be found in the repository.
 
+\newpage %TODO for better formatting
 \section{Drawbacks}
 
 One major drawback of our approach is that fsbench does the whole benchmark for one file in one piece and in memory. While this makes it easy for fsbench to provide unbiased results (no need to stop the measurement, copy new data into the memory and start the measurement again), it also means that we can not currently do benchmarks for files with a size greater than about \(\frac{1}{3}\) of the memory available to the system.
@@ -250,7 +254,77 @@ ROOT files aim to be very compressed binary files. Therefore little compression 
 \\
 
 Our final data set is the Silesia compression Corpus\footnote{\url{http://sun.aei.polsl.pl/~sdeor/index.php?page=silesia}}, a standard data set for testing lossless compression algorithms, therefor it contains a multitude of data and formats. We used this to gain an initial impression of the algorithms and which aspects they excel in. While this dataset aims to be as diverse as possible, some of the datasets are also typical for HPC.
+\\ \\
+
+\begin{figure}[h]
+\begin{center}
+\begin{tabular}{ll}
+\toprule
+\textbf{Size} & \textbf{Structure}\\
+\midrule
+
+\DTsetlength{0pt}{0pt}{0pt}{0pt}{0pt}
+\begin{minipage}{1cm}\dirtree{%
+.1 4.6\;GB.
+.1 2.2\;GB.
+.1 1.7\;GB.
+.1 1.7\;GB.
+.1 502\;MB.
+.1 502\;MB.
+.1 28\;MB.
+.1 203\;MB.
+.1 49\;MB.
+.1 40\;MB.
+.1 32\;MB.
+.1 21\;MB.
+.1 9.8\;MB.
+.1 9.7\;MB.
+.1 9.6\;MB.
+.1 8.1\;MB.
+.1 7.0\;MB.
+.1 6.4\;MB.
+.1 5.9\;MB.
+.1 5.1\;MB.
+.1 39\;MB.
+.1 14\;MB.
+.1 16\;KB.
+.1 14\;MB.
+}\end{minipage}
+&
+\DTsetlength{0.5em}{1em}{0.2em}{0.4pt}{0pt}
+\begin{minipage}{11cm}\dirtree{%
+.1 \textbackslash\(.\).
+.2 006C5625-0874-E011-912E-0015178C6788\(.\)root.
+.2 cera.
+.3 CLM\_A1B\_1\_D2\_dc\_TMAX\_2M\_1-7305\(.\)nc.
+.2 kcdc.
+.3 data\(.\)txt.
+.3 EULA\(.\)pdf.
+.2 silesia.
+.3 mozilla.
+.3 webster.
+.3 nci.
+.3 samba.
+.3 dickens.
+.3 osdb.
+.3 mr.
+.3 x-ray.
+.3 sao.
+.3 reymont.
+.3 ooffice.
+.3 xml.
+.2 sea\_ice\_thickness\(.\)nc.
+.2 weather\_data.
+.3 rap\_130\_20150322\_0000\_000\(.\)inv.
+.3 rap\_130\_20150322\_0000\_000\(.\)grb2.
+}\end{minipage}
 \\
+\bottomrule
+\end{tabular}
+\end{center}
+\caption{Datasets with structure and sizes}
+\label{fig:data_dir_tree}
+\end{figure}
 \newpage
 
 \FloatBarrier
